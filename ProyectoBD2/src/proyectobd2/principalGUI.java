@@ -477,7 +477,7 @@ public class principalGUI extends javax.swing.JFrame {
     }
 
     /**
-     * @return the jtHost2
+     * @return the jtHost2 
      */
     public javax.swing.JTextField getJtHost2() {
         return jtHost2;
