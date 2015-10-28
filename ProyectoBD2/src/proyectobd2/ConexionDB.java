@@ -20,20 +20,22 @@ import java.sql.SQLException;
  */
 public class ConexionDB {
       
-    public static Connection GetConnection() throws FileNotFoundException, IOException
+    public static Connection getConexion(String servidor, String bd, String usuario, String contrasena) throws FileNotFoundException, IOException
     {
         Connection conexion=null;
         if (conexion==null){
             try{
-                conexion = DriverManager.getConnection("jdbc:mysql://localhost/practica1","root","root");
+                conexion = DriverManager.getConnection("jdbc:postgresql://"+servidor+"/"+bd, usuario,contrasena);
+                System.out.println("Conexion ok");
             }catch(SQLException ex){
                 conexion=null;
+                ex.printStackTrace();
             }
         }
         return conexion;
     }
     
-    public static void Disconnect(Connection con) throws SQLException{
+    public static void desconectar(Connection con) throws SQLException{
         con.close();
     }
 }
