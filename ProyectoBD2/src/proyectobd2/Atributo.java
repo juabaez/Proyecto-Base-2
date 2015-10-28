@@ -3,18 +3,19 @@ package proyectobd2;
 import java.util.Objects;
 
 
-/**
- *
- * @author juancruz
- */
-
 public class Atributo {
     private String nombre;
     private String tipo;
+    private String pk;
+    private String fk;
+    private String unq;
 
-    public Atributo(String nombre, String tipo) {
+    public Atributo(String nombre, String tipo,String pk,String fk,String unq) {
         this.nombre = nombre;
         this.tipo = tipo;
+        this.pk = pk;
+        this.fk = fk;
+        this.unq = unq;
     }
 
     public String getNombre() {
@@ -31,6 +32,30 @@ public class Atributo {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getPk() {
+        return pk;
+    }
+
+    public void setPk(String pk) {
+        this.pk = pk;
+    }
+
+    public String getFk() {
+        return fk;
+    }
+
+    public void setFk(String fk) {
+        this.fk = fk;
+    }
+
+    public String getUnq() {
+        return unq;
+    }
+
+    public void setUnq(String unq) {
+        this.unq = unq;
     }
 
     @Override
