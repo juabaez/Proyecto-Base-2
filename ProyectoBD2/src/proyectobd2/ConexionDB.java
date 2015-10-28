@@ -20,8 +20,7 @@ import java.sql.SQLException;
  */
 public class ConexionDB {
       
-    public static Connection getConexion(String servidor, String bd, String usuario, String contrasena) throws FileNotFoundException, IOException
-    {
+    public static Connection getConexion(String servidor, String bd, String usuario, String contrasena) throws FileNotFoundException, IOException{
         Connection conexion=null;
         if (conexion==null){
             try{

@@ -54,7 +54,7 @@ public class principal {
     }
     
     public void listarTablas(Connection conexion) throws IOException, SQLException{
-        
+        //
     }
     
 }

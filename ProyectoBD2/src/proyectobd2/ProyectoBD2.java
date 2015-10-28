@@ -30,7 +30,9 @@ public class ProyectoBD2 implements ActionListener{
             javax.swing.UIManager.getSystemLookAndFeelClassName());
             ventana.setVisible(true);
             ventana.setActionListeners(this);
-        }catch ( Exception e ) { }
+        }catch ( Exception e) { 
+            e.printStackTrace();
+        }
         
     }
 

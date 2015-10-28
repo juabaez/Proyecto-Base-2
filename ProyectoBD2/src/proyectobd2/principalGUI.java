@@ -13,9 +13,6 @@ import java.awt.event.ActionListener;
  */
 public class principalGUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form guiPrincipal
-     */
     public principalGUI() {
         initComponents();
     }
