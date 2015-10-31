@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
 
 /**
  *
@@ -53,6 +55,7 @@ public class principal {
         
     }
     
+    
     public void listarTablas(Connection conexion, String bd) throws IOException, SQLException{
         try {
             String[] tipo = {"TABLE"};
@@ -90,6 +93,34 @@ public class principal {
             sqle.printStackTrace();
             System.err.println("Error connecting: " + sqle);
         }
+    }
+    
+    public LinkedList<Trigger> listaTrigger(String nombreT) throws SQLException{
+        Statement s = conexion1.createStatement();
+        LinkedList<Trigger> lT = new LinkedList();
+        LinkedList<String> nombTrigger = nombreTrigger(nombreT,s);
+        LinkedList<String> condTrigger = new LinkedList();
+        ResultSet rs;
+        String disparador=null;
+        for (int i = 0; i < nombTrigger.size(); i++) {
+            rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"'");
+            while (rs.next()){
+                disparador = rs.getObject("action_timing").toString();
+                condTrigger.add(rs.getObject("event_manipulation").toString());
+            }
+            lT.add(new Trigger(nombreT, condTrigger, disparador));
+        }
+        s.close();
+        return lT;
+    }
+    
+    public static LinkedList<String> nombreTrigger(String nom,Statement s) throws SQLException{
+        LinkedList<String> nomb = new LinkedList();
+        ResultSet rs = s.executeQuery("SELECT tgname FROM pg_trigger, pg_class WHERE tgrelid=pg_class.oid AND relname='"+nom+"' AND tgname not like '%RI_ConstraintTrigger_%';");
+        while (rs.next()){
+            nomb.add(rs.getObject("tgname").toString());
+        }
+        return nomb;
     }
     
 }
