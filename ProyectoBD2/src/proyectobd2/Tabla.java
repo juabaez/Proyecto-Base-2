@@ -22,7 +22,35 @@ public class Tabla {
     }
     
     public void agregarAtributo(Atributo nuevo){
-        this.atributos.add(nuevo);
+        this.getAtributos().add(nuevo);
+    }
+
+    /**
+     * @return the atributos
+     */
+    public LinkedList<Atributo> getAtributos() {
+        return atributos;
+    }
+
+    /**
+     * @param atributos the atributos to set
+     */
+    public void setAtributos(LinkedList<Atributo> atributos) {
+        this.atributos = atributos;
+    }
+
+    /**
+     * @return the nombre
+     */
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     * @param nombre the nombre to set
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
         
     

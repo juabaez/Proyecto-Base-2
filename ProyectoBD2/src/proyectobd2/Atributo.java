@@ -7,14 +7,16 @@ public class Atributo {
     private String nombre;
     private String tipo;
     private boolean pk;
-    private boolean fk;
+    private String refAAtributo;
+    private String refATabla;
     private boolean unq;
 
-    public Atributo(String nombre, String tipo, boolean pk, boolean fk, boolean unq) {
+    public Atributo(String nombre, String tipo, boolean pk, String refAAtributo, String refATabla, boolean unq) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.pk = pk;
-        this.fk = fk;
+        this.refAAtributo = refAAtributo;
+        this.refATabla = refATabla;
         this.unq = unq;
     }
 
@@ -40,14 +42,6 @@ public class Atributo {
 
     public void setPk(boolean pk) {
         this.pk = pk;
-    }
-
-    public boolean getFk() {
-        return fk;
-    }
-
-    public void setFk(boolean fk) {
-        this.fk = fk;
     }
 
     public boolean getUnq() {
@@ -76,7 +70,10 @@ public class Atributo {
         if (!Objects.equals(this.pk, other.pk)) {
             return false;
         }
-        if (!Objects.equals(this.fk, other.fk)) {
+        if (!Objects.equals(this.refATabla, other.refATabla)) {
+            return false;
+        }
+        if (!Objects.equals(this.refAAtributo, other.refAAtributo)){
             return false;
         }
         if (!Objects.equals(this.unq, other.unq)) {
@@ -105,15 +102,23 @@ public class Atributo {
                     " el de la base "+nombreBD1+" NO lo es\n";
             } 
         }
-        //VER SI SE NECESITA SABER A QUIEN REFERENCIA
-        if (!this.fk == otro.fk){
-            if (fk){
-                resultado = resultado + "Mientras que el atributo "+this.nombre+" en la base de datos "+nombreBD1+" es de tipo CLAVE FORANEA"+
-                    " el de la base "+nombreBD2+" NO lo es\n";
-            } else {
-                resultado = resultado + "Mientras que el atributo "+this.nombre+" en la base de datos "+nombreBD2+" es de tipo CLAVE FORANEA"+
-                    " el de la base "+nombreBD1+" NO lo es\n";
-            } 
+        if (!this.refAAtributo.equals(otro.getRefAAtributo())){
+            //Que el de la base 1 sea clave foranea pero el de la 2 no
+            if (!this.refAAtributo.equals("") && otro.getRefAAtributo().equals("")){
+                resultado = resultado + "Mientras que el atributo "+this.nombre+" en la base de datos "+nombreBD1+" es CLAVE FORANEA"+
+                    "que referencia a "+this.getRefATabla()+"("+this.getRefAAtributo()+") el de la base "+nombreBD2+" NO es CLAVE FORANEA\n";
+            }
+            //Que el de la base 1 NO sea clave foraea y el de la 2 si
+            if (this.refAAtributo.equals("") && !otro.getRefAAtributo().equals("")){
+                resultado = resultado + "Mientras que el atributo "+this.nombre+" en la base de datos "+nombreBD1+" NO es CLAVE FORANEA"+
+                    " el de la base "+nombreBD2+" es CLAVE FORANEA que referencia a "+ otro.getRefATabla()+"("+otro.getRefAAtributo()+")\n";
+            }
+            //Que ambos sean claves foraneas pero no iguales    
+            if (!this.refAAtributo.equals("") && !otro.getRefAAtributo().equals("")){
+                resultado = resultado + "Mientras que el atributo "+this.nombre+" en la base de datos "+nombreBD1+" es CLAVE FORANEA"+
+                    "que referencia a "+this.getRefATabla()+"("+this.getRefAAtributo()+") el de la base "+nombreBD2+" es CLAVE FORANEA que referencia a "+ 
+                     otro.getRefATabla()+"("+otro.getRefAAtributo()+")\n";
+            }
         }
         if (!this.unq == otro.unq){
             if (unq){
@@ -124,10 +129,38 @@ public class Atributo {
                     " el de la base "+nombreBD1+" NO lo es\n";
             } 
         }
-        if (resultado.equals("")){
+        /*if (resultado.equals("")){
             resultado = "Atributos Iguales";
-        }
+        }*/
         return resultado;
+    }
+
+    /**
+     * @return the refAAtributo
+     */
+    public String getRefAAtributo() {
+        return refAAtributo;
+    }
+
+    /**
+     * @param refAAtributo the refAAtributo to set
+     */
+    public void setRefAAtributo(String refAAtributo) {
+        this.refAAtributo = refAAtributo;
+    }
+
+    /**
+     * @return the refATabla
+     */
+    public String getRefATabla() {
+        return refATabla;
+    }
+
+    /**
+     * @param refATabla the refATabla to set
+     */
+    public void setRefATabla(String refATabla) {
+        this.refATabla = refATabla;
     }
     
     
