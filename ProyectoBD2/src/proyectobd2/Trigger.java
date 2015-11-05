@@ -6,6 +6,7 @@
 package proyectobd2;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  *
@@ -47,8 +48,34 @@ public class Trigger {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Trigger other = (Trigger) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.condicion, other.condicion)) {
+            return false;
+        }
+        if (!Objects.equals(this.disparador, other.disparador)) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
     public String toString() {
-        return "Trigger{" + "nombre=" + nombre + ", condicion=" + condicion + ", disparador=" + disparador + '}';
+        String cond= "";
+        cond = cond + condicion.getFirst();
+        for (int i = 1; i < condicion.size(); i++) {
+            cond = cond +", "+condicion.get(i);
+        }
+        return "Trigger{" + "nombre: " + nombre + ", condicion: " + cond + ", disparador: " + disparador + '}';
     }
     
 }
