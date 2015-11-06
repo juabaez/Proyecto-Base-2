@@ -163,4 +163,37 @@ public class principal {
         return nomb;
     }
     
+    public LinkedList<Procedure> getprocedures(Connection conexion, String bd) throws SQLException{
+        LinkedList<Procedure> result=new LinkedList<Procedure>();        
+        DatabaseMetaData metaData = conexion.getMetaData();
+        try (ResultSet resultSetProcedure = metaData.getProcedures(bd, "public", null)){
+            ResultSet resultSetParameter;
+             while (resultSetProcedure.next()) {
+                 String retorno=resultSetProcedure.getString(8);
+                 if(retorno.equals("procedureResultUnknown")){
+                     retorno="No se puede determinar si el valor de retorno será devuelto";
+                 }else if(retorno.equals("procedureNoResult")){
+                     retorno= "No devuelve un valor de retorno";
+                 }else if(retorno.equals("procedureReturnsResult")){
+                     retorno="Devuelve un valor de retorno";
+                 }
+                 Procedure proc=new Procedure(resultSetProcedure.getNString(3),retorno);
+                 /*
+                 **
+                 ** Falta meter el codigo para los parametros... resultSetParameter
+                 **
+                 */
+             }
+             
+             
+             resultSetProcedure.close();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.err.println("Error connecting: " + sqle);
+        }
+        
+        
+        return result;
+    }
+    
 }

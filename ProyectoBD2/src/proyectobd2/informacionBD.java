@@ -15,13 +15,13 @@ public class informacionBD {
     
     private LinkedList<Tabla> tablas;//listado de tablas existentes
     private LinkedList<Trigger> triggers;//listado de triggers existentes
-    private LinkedList<String> procedimientos;//LinkedList<String> debera ser LinkedList<Procedimientos> se tiene que cambiar
+    private LinkedList<Procedure> procedimientos;//LinkedList<String> debera ser LinkedList<Procedimientos> se tiene que cambiar
     private String nombre = "";
     
     public informacionBD(){
     }
     
-    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Trigger> triggers, LinkedList<String> procedimientos){
+    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Trigger> triggers, LinkedList<Procedure> procedimientos){
         this.nombre = nombre;
         this.tablas = tablas;
         this.triggers = triggers;
@@ -132,14 +132,14 @@ public class informacionBD {
     /**
      * @return the procedimientos
      */
-    public LinkedList<String> getProcedimientos() {
+    public LinkedList<Procedure> getProcedimientos() {
         return procedimientos;
     }
 
     /**
      * @param procedimientos the procedimientos to set
      */
-    public void setProcedimientos(LinkedList<String> procedimientos) {
+    public void setProcedimientos(LinkedList<Procedure> procedimientos) {
         this.procedimientos = procedimientos;
     }
 
