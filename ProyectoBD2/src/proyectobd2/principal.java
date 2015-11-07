@@ -143,7 +143,7 @@ public class principal {
         ResultSet rs;
         String disparador=null;
         for (int i = 0; i < nombTrigger.size(); i++) {
-            rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"'");
+            rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"' order by event_manipulation");
             while (rs.next()){
                 disparador = rs.getObject("action_timing").toString();
                 condTrigger.add(rs.getObject("event_manipulation").toString());
@@ -156,7 +156,7 @@ public class principal {
     
     public static LinkedList<String> nombreTrigger(String nom,Statement s) throws SQLException{
         LinkedList<String> nomb = new LinkedList();
-        ResultSet rs = s.executeQuery("SELECT tgname FROM pg_trigger, pg_class WHERE tgrelid=pg_class.oid AND relname='"+nom+"' AND tgname not like '%RI_ConstraintTrigger_%';");
+        ResultSet rs = s.executeQuery("SELECT tgname FROM pg_trigger, pg_class WHERE tgrelid=pg_class.oid AND relname='"+nom+"' AND tgname not like '%RI_ConstraintTrigger_%' order by tgname;");
         while (rs.next()){
             nomb.add(rs.getObject("tgname").toString());
         }

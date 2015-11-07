@@ -59,11 +59,40 @@ public class Trigger {
         if (!Objects.equals(this.nombre, other.nombre)) {
             return false;
         }
-        if (!Objects.equals(this.condicion, other.condicion)) {
-            return false;
+        if (this.condicion!= null && other.condicion!=null) {
+            return this.equalsCondicion(other);
         }
         if (!Objects.equals(this.disparador, other.disparador)) {
             return false;
+        }
+        return true;
+    }
+    
+    public boolean equalsCondicion(Trigger other){
+        LinkedList<String> current = this.condicion;
+        LinkedList<String> otherC = other.condicion;
+        if (current.size()==3 && otherC.size()==3) {
+            return true;
+        }
+        if (current.size()!=otherC.size()) {
+            return false;
+        }
+        if (current.size()<3 && otherC.size()<3) {
+            int i = 0;
+            int j = 0;
+            boolean iguales = false;
+            while (i<current.size() && j<otherC.size() && !iguales){
+                if (!current.get(i).equals(otherC.get(j))) {
+                    iguales = true;
+                }
+                i++;
+                j++;
+            }
+            if (iguales) {
+                return false;
+            }else{
+                return true;
+            }
         }
         return true;
     }
