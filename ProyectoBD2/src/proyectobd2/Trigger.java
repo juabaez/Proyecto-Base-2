@@ -107,4 +107,38 @@ public class Trigger {
         return "Trigger{" + "nombre: " + nombre + ", condicion: " + cond + ", disparador: " + disparador + '}';
     }
     
+    /**
+     * Como condición de uso el nombre de los trigger deben ser iguales, sino se concidera que son distintas columnas de la tabla
+     * @param otro trigger a comparar
+     * @param nombreBD1 nombre de la base de datos 1
+     *  @param nombreBD2 nombre de la base de datos 2
+     * @return listado de diferencias entre triggers
+     */
+    public String comparacionTrigger(Trigger otro, String nombreBD1, String nombreBD2){
+        String resultado = "";
+        int i=0;
+        int j=0;
+        while (i<this.condicion.size() && j<otro.getCondicion().size()){
+            if (!this.condicion.get(i).equals(otro.getCondicion().get(j))) {
+                resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
+                    "mientras que en la base de datos "+nombreBD2+" tiene como condicion de disparo "+otro.getDisparador();
+            }
+            i++;
+            j++;
+        }
+        while (i<this.condicion.size()) {
+            resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
+                "mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo ";
+        }
+        while (j<otro.getCondicion().size()) {
+                resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
+                    "mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo";
+        }
+        if (!this.disparador.equals(otro.getDisparador())) {
+            resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como disparador "+this.disparador+
+                    "mientras que en la base de datos "+nombreBD2+" tiene como disparador "+otro.getDisparador();
+        }
+        return resultado;
+    }
+    
 }
