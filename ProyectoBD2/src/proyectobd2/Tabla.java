@@ -22,7 +22,9 @@ public class Tabla {
     }
     
     public void agregarAtributo(Atributo nuevo){
-        this.getAtributos().add(nuevo);
+        LinkedList<Atributo> atributos = this.getAtributos();
+        atributos.add(nuevo);
+        this.setAtributos(atributos);
     }
 
     /**

@@ -9,8 +9,13 @@ public class Atributo {
     private boolean pk;
     private String refAAtributo;
     private String refATabla;
-    private boolean unq;
+    private boolean unq = false;
 
+    public Atributo(String nombre, String tipo){
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
+    
     public Atributo(String nombre, String tipo, boolean pk, String refAAtributo, String refATabla, boolean unq) {
         this.nombre = nombre;
         this.tipo = tipo;
