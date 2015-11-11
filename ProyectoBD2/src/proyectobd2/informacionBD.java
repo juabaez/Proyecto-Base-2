@@ -129,7 +129,8 @@ public class informacionBD {
                                 String res = atrib1.comparacion(atrib2, base01.getNombre(), base02.getNombre());
                                 if (!res.equals("")){
                                     if (!mostrado){
-                                        res = tablaBD1.getNombre()+":\n" +res;
+                                        res = "\nTabla "+tabla+":\n" +res;
+                                        mostrado = true;
                                     }                                    
                                     resultado = resultado + res;
                                 }
