@@ -63,6 +63,7 @@ public class principal {
                 //mostrarDatosTablas(getTablas(conexion2, bd2));
                 con2.desconectar(conexion1);
                 
+    System.out.println(infoBD2.getTablas().get(0).getAtributos().get(1).toString());
                 
                 System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
             } catch(Exception e){
