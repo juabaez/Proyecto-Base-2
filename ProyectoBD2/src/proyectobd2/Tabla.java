@@ -18,6 +18,8 @@ import java.util.LinkedList;
 public class Tabla {
     
     private LinkedList<Atributo> atributos;
+    private LinkedList<Trigger> triggers;
+    private LinkedList<Indice> indices;
     private String nombre;
     
     public Tabla(String nombre){
@@ -58,7 +60,23 @@ public class Tabla {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-        
+
+    public LinkedList<Trigger> getTriggers() {
+        return triggers;
+    }
+
+    public void setTriggers(LinkedList<Trigger> triggers) {
+        this.triggers = triggers;
+    }
+
+    public LinkedList<Indice> getIndices() {
+        return indices;
+    }
+
+    public void setIndices(LinkedList<Indice> indices) {
+        this.indices = indices;
+    }
+       
     public LinkedList<Trigger> listaTrigger(String nombreT, Connection con) throws SQLException{
         Statement s = con.createStatement();
         LinkedList<Trigger> lT = new LinkedList();
