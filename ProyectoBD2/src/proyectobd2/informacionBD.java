@@ -37,7 +37,7 @@ public class informacionBD {
         String resultado = "\n\t----------------------\n\tCOMPARACIÓN DE TABLAS:\n\t----------------------\n\n";
         resultado = resultado + compararTablas(base01, base02);
         resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE ATRIBUTOS:\n\t-------------------------\n";
-        resultado = resultado + comprarAtributos(base01, base02);
+        resultado = resultado + compararAtributos(base01, base02);
         return resultado;
     }
 
@@ -107,7 +107,7 @@ public class informacionBD {
         return resultado;
     }
     
-    public String comprarAtributos(informacionBD base01, informacionBD base02){
+    public String compararAtributos(informacionBD base01, informacionBD base02){
         String resultado = "";
         for (int i = 0; i < base01.getTablas().size(); i++) {
             Tabla tablaBD1 = base01.getTablas().get(i);
@@ -117,6 +117,8 @@ public class informacionBD {
                 String adicionales1 = "";
                 String adicionales2 = "";
                 if (tablaBD1.getNombre().equals(tablaBD2.getNombre())){
+                    String tabla = tablaBD1.getNombre();
+                    boolean mostrado = false;
                     for (int k = 0; k < tablaBD1.getAtributos().size(); k++) {
                         Atributo atrib1 = tablaBD1.getAtributos().get(k);
                         boolean encontrado =false;
@@ -124,7 +126,14 @@ public class informacionBD {
                             Atributo atrib2 = tablaBD2.getAtributos().get(l);
                             if (atrib1.getNombre().equals(atrib2.getNombre())) {
                                 encontrado = true;
-                                resultado = resultado + atrib1.comparacion(atrib2, base01.getNombre(), base02.getNombre());
+                                String res = atrib1.comparacion(atrib2, base01.getNombre(), base02.getNombre());
+                                if (!res.equals("")){
+                                    if (!mostrado){
+                                        res = tablaBD1.getNombre()+":\n" +res;
+                                    }                                    
+                                    resultado = resultado + res;
+                                }
+                                
                             }
                         }
                         if (encontrado){
@@ -171,6 +180,25 @@ public class informacionBD {
         }
         
         return resultado;
+    }
+    
+    public String compararTriggers(informacionBD base01, informacionBD base02){
+        
+        for (int i = 0; i < base01.getTablas().size(); i++) {
+            Tabla tablaBD1 = base01.getTablas().get(i);
+            boolean encontrada = false;
+            for (int j = 0; j < base02.getTablas().size() && !encontrada; j++) {
+                Tabla tablaBD2 =  base02.getTablas().get(j);
+                if (tablaBD1.getNombre().equals(tablaBD2.getNombre())){
+                    encontrada = true;
+                }
+            }
+            if (encontrada){
+                //tablasComunes = tablasComunes + tablaBD1.getNombre()+"\n\t";
+            } else {
+                //adicionales1 = adicionales1 + tablaBD1.getNombre()+"\n\t";
+            }
+        }
     }
     
     /**

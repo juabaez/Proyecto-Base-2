@@ -121,7 +121,7 @@ public class Atributo {
             }
             //Que ambos sean claves foraneas pero no iguales    
             if (!this.refAAtributo.equals("") && !otro.getRefAAtributo().equals("")){
-                resultado = resultado + "\nMientras que el atributo '"+this.nombre+"' en la base de datos '"+nombreBD1+"' es CLAVE FORANEA"+
+                resultado = resultado + "\nMientras que el atributo '"+this.nombre+"' en la base de datos '"+nombreBD1+"' es CLAVE FORANEA "+
                     "que referencia a '"+this.getRefATabla()+"("+this.getRefAAtributo()+")' el de la base '"+nombreBD2+"' es CLAVE FORANEA que referencia a '"+ 
                      otro.getRefATabla()+"("+otro.getRefAAtributo()+")'\n";
             }
