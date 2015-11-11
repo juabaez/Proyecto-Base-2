@@ -34,9 +34,10 @@ public class informacionBD {
      * @return String con las diferencias solicitadas de las bases de datos
      */
     public String comparacion(informacionBD base01, informacionBD base02){
-        String resultado = "";
+        String resultado = "\n\t----------------------\n\tCOMPARACIÓN DE TABLAS:\n\t----------------------\n\n";
         resultado = resultado + compararTablas(base01, base02);
-        
+        resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE ATRIBUTOS:\n\t-------------------------\n";
+        resultado = resultado + comprarAtributos(base01, base02);
         return resultado;
     }
 
@@ -62,7 +63,7 @@ public class informacionBD {
                 }
             }
         } else {
-            resultado = resultado + "- No existen tablas en "+base01.nombre+"\n";
+            resultado = resultado + "- No existen tablas en '"+base01.nombre+"'\n";
         }
         if (base02.getTablas().size()>0){
             for (int i = 0; i < base02.getTablas().size(); i++) {
@@ -79,22 +80,22 @@ public class informacionBD {
                 }
             }
         } else {
-            resultado = resultado + "- No existen tablas en "+base01.nombre+"\n";
+            resultado = resultado + "- No existen tablas en '"+base01.nombre+"'\n";
         }
         if (adicionales1.equals("") && adicionales2.equals("")){
             resultado = resultado + "+ Las bases de datos tienen las mismas tablas:\n"+tablasComunes;
         } else {
             resultado = resultado + "- Las bases de datos no tienen las mismas tablas.\nTablas comunes:\n"+tablasComunes;
             if (adicionales1.equals("")){
-                resultado = resultado + "\n- La base de datos "+base01.getNombre()+" no tiene tablas adicionales.";
+                resultado = resultado + "\n- La base de datos '"+base01.getNombre()+"' no tiene tablas adicionales.";
             } else {
-                resultado = resultado + "\nLa base de datos "+base01.getNombre()+" tiene las siguientes tablas adicionales:\n"+
+                resultado = resultado + "\nLa base de datos '"+base01.getNombre()+"' tiene las siguientes tablas adicionales:\n"+
                         adicionales1;
             }
             if (adicionales2.equals("")){
-                resultado = resultado + "\n- La base de datos "+base02.getNombre()+" no tiene tablas adicionales.";
+                resultado = resultado + "\n- La base de datos '"+base02.getNombre()+"' no tiene tablas adicionales.";
             } else {
-                resultado = resultado + "\n- La base de datos "+base02.getNombre()+" tiene las siguientes tablas adicionales:\n\t"+
+                resultado = resultado + "\n- La base de datos '"+base02.getNombre()+"' tiene las siguientes tablas adicionales:\n\t"+
                         adicionales2;
             }
         }
@@ -108,6 +109,66 @@ public class informacionBD {
     
     public String comprarAtributos(informacionBD base01, informacionBD base02){
         String resultado = "";
+        for (int i = 0; i < base01.getTablas().size(); i++) {
+            Tabla tablaBD1 = base01.getTablas().get(i);
+            for (int j = 0; j < base02.getTablas().size(); j++) {
+                Tabla tablaBD2 = base02.getTablas().get(j);
+                String comunes = "\t";
+                String adicionales1 = "";
+                String adicionales2 = "";
+                if (tablaBD1.getNombre().equals(tablaBD2.getNombre())){
+                    for (int k = 0; k < tablaBD1.getAtributos().size(); k++) {
+                        Atributo atrib1 = tablaBD1.getAtributos().get(k);
+                        boolean encontrado =false;
+                        for (int l = 0; l < tablaBD2.getAtributos().size() && !encontrado; l++) {
+                            Atributo atrib2 = tablaBD2.getAtributos().get(l);
+                            if (atrib1.getNombre().equals(atrib2.getNombre())) {
+                                encontrado = true;
+                                resultado = resultado + atrib1.comparacion(atrib2, base01.getNombre(), base02.getNombre());
+                            }
+                        }
+                        if (encontrado){
+                            comunes = comunes + atrib1.getNombre()+"\n\t";
+                        } else {
+                            adicionales1 = adicionales1 + atrib1.getNombre()+"\n\t";
+                        }
+                    }
+                    for (int k = 0; k < tablaBD2.getAtributos().size(); k++) {
+                        Atributo atrib2 = tablaBD2.getAtributos().get(k);
+                        boolean encontrado =false;
+                        for (int l = 0; l < tablaBD1.getAtributos().size() && !encontrado; l++) {
+                            Atributo atrib1 = tablaBD1.getAtributos().get(l);
+                            if (atrib1.getNombre().equals(atrib2.getNombre())) {
+                                encontrado = true;
+                                //resultado = resultado + atrib2.comparacion(atrib1, base02.getNombre(), base01.getNombre());
+                            }
+                        }
+                        if (!encontrado){
+                            adicionales2 = adicionales2 + atrib2.getNombre()+"\n\t";
+                        }
+                    }
+                    
+                    if (adicionales1.equals("") && adicionales2.equals("")){
+                        resultado = resultado + "\n+ Las tablas '"+tablaBD1.getNombre()+"' tienen los mismos atributos:\n"+comunes;
+                    } else {
+                        resultado = resultado + "\n- Las tablas '"+tablaBD1.getNombre()+"' no tienen los mismos atributos:.\nAtributos comunes:\n"+comunes;
+                        if (adicionales1.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base01.getNombre()+" no tiene atributos adicionales.";
+                        } else {
+                            resultado = resultado + "\nLa tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base01.getNombre()+" tiene los siguientes atributos adicionales:\n"+
+                                    adicionales1;
+                        }
+                        if (adicionales2.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" no tiene atributos adicionales.";
+                        } else {
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" tiene los siguientes atributos adicionales:\n"+
+                                    adicionales2;
+                        }
+                    }
+                }
+                
+            }
+        }
         
         return resultado;
     }
