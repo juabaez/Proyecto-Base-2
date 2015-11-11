@@ -59,5 +59,13 @@ public class Indice {
         return "Indice{" + "nombre=" + nombre + ", detalle=" + detalle + '}';
     }
     
+    public String comparacionIndice(Indice other, String nombreBD1, String nombreBD2){
+        String res="";
+        if (!this.detalle.equals(other.getDetalle())) {
+            res = res + "Mientras que el indice "+this.nombre+" en la base de datos "+nombreBD1+" tiene como detalle "+this.detalle+
+                    " el de la base "+nombreBD2+" tiene como detalle "+other.getDetalle()+"\n";
+        }
+        return res;
+    }
     
 }
