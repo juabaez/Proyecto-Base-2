@@ -183,7 +183,7 @@ public class informacionBD {
     }
     
     public String compararTriggers(informacionBD base01, informacionBD base02){
-        
+        String resultado ="";
         for (int i = 0; i < base01.getTablas().size(); i++) {
             Tabla tablaBD1 = base01.getTablas().get(i);
             boolean encontrada = false;
@@ -199,6 +199,7 @@ public class informacionBD {
                 //adicionales1 = adicionales1 + tablaBD1.getNombre()+"\n\t";
             }
         }
+        return resultado;
     }
     
     /**
