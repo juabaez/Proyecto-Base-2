@@ -79,17 +79,22 @@ public class principal {
                 String[] titulos = {"enTabla", "enAtributo", "aTabla", "aAtributo"};
                 Object[][] datos = {};
                 DefaultTableModel clavesForaneas = new DefaultTableModel(datos, titulos);
+                
                 //Se obtienen y guardan las tablas
                 while (resultSetTables.next()) {
                     Tabla tablaActual = new Tabla(resultSetTables.getString(3));
-                    //System.out.println("\tnombre tabla: " + resultSetTables.getString(3));
+                    
                     rsC = metaData.getColumns(null, null, resultSetTables.getString(3), null);
+                    
+
                     //Se obtienen los atributos y tipos
                     while (rsC.next()) {
                         Atributo atributo = new Atributo(rsC.getString(4), rsC.getString(6));
                         //System.out.println("\t\tColumna: " + rsC.getString(4) + "\t\t Tipo: " + rsC.getString(6));
                         tablaActual.agregarAtributo(atributo);
                     }
+                    
+                    
                     //Se obtienen y guardan las claves primarias
                     rsP = metaData.getPrimaryKeys(null, null, resultSetTables.getString(3));
                     while (rsP.next()) {
@@ -100,6 +105,8 @@ public class principal {
                             }
                         }
                     }
+                    
+                    
                     //Obtencion de las claves foraneas, se guardan en un DefaultTableModel
                     rsF = metaData.getExportedKeys(null, null, resultSetTables.getString(3));
                     while (rsF.next()) {
@@ -116,44 +123,29 @@ public class principal {
                         String[] fila = {tablaActual.getNombre(), nombreColumna, rsF.getString("FKTABLE_NAME"), rsF.getString("FKCOLUMN_NAME")};
                         clavesForaneas.addRow(fila);
                     }
-                    //Se obtienen las claves unicas     
+                    
+                    
+                    //Se obtienen y guardan las claves unicas     
                     rsU = metaData.getIndexInfo(null, null, tablaActual.getNombre(), true, false);
                     while (rsU.next()) {
                         String atribNombre = rsU.getString(9);
-                        rsP = metaData.getPrimaryKeys(null, null, tablaActual.getNombre());
-                        boolean encontrado = false;
-                        while (rsP.next() && !encontrado) {
-                            if (atribNombre.equals(rsP.getObject(4).toString())){
-                                encontrado = true;
-                                System.out.println("ENCONTRADO Bus "+atribNombre +"--"+rsP.getObject(4).toString());
-                            }
-                        }
-                        System.out.println("Encontrado = "+encontrado+" nombre "+atribNombre);
-                        if (encontrado == true){
-                            for (int i = 0; i < tablaActual.getAtributos().size(); i++) {
-                                if (tablaActual.getAtributos().get(i).getNombre().equals(atribNombre)){
+                        for (int i = 0; i < tablaActual.getAtributos().size(); i++) {
+                            Atributo actual = tablaActual.getAtributos().get(i);
+                            if (actual.getNombre().equals(atribNombre)){
+                                if (!actual.getPk()) {
                                     tablaActual.getAtributos().get(i).setUnq(true);
+                                    //Solo para atributos que no son claves primarias
                                 }
                             }
                         }
-                        /*if (!rsU.getBoolean(4)){                            
-                            System.out.println("-Tabla "+resultSetTables.getString(3)+" Unique: "+rsU.getString(9)+ "-" +rsU.getString("INDEX_NAME"));
-                        }*/
-                        
                     }
                     tablas.add(tablaActual);
                     rsC.close();
                     rsF.close();
                     rsP.close();
                 }
-                
-//                    for (int i = 0; i < clavesForaneas.getRowCount(); i++) {
-//                        for (int j = 0; j < clavesForaneas.getColumnCount(); j++) {
-//                            System.out.print(clavesForaneas.getValueAt(i, j)+"-");
-//                        }
-//                        System.out.println("");
-//                    }
-                
+
+                //Se guardan las claves foraneas en los atributos que corresponden
                 for (int i = 0; i < clavesForaneas.getRowCount(); i++) {
                     String nombreTabla = (String)clavesForaneas.getValueAt(i, 2);
                     for (int j = 0; j < tablas.size(); j++) {
@@ -183,49 +175,10 @@ public class principal {
             System.out.println("Tabla: "+actual.getNombre());
             for (int j = 0; j < actual.getAtributos().size(); j++) {
                 Atributo atribActual = actual.getAtributos().get(j);
-                System.out.println("\t\t"+atribActual.getNombre()+" tipo: "+atribActual.getTipo()+" PK: "+atribActual.getPk()+" UK: "+atribActual.getPk()+" FK: "+atribActual.getRefATabla()+" ("+atribActual.getRefAAtributo()+")");
+                System.out.println("\t\t"+atribActual.getNombre()+" tipo: "+atribActual.getTipo()+" PK: "+atribActual.getPk()+" UK: "+atribActual.getUnq()+" FK: "+atribActual.getRefATabla()+" ("+atribActual.getRefAAtributo()+")");
             }
         }
     }
-    
-    /*public void listarTablas(Connection conexion, String bd) throws IOException, SQLException{
-        try {
-            String[] tipo = {"TABLE"};
-            DatabaseMetaData metaData = conexion.getMetaData();
-            try (ResultSet resultSetTables = metaData.getTables(bd, "public", null, tipo)) {
-                ResultSet rsP, rsC, rsF;
-                while (resultSetTables.next()) {
-                    System.out.println("-----------------------------------------------------");
-                    System.out.println("\tcatalogo: " + resultSetTables.getString(1));
-                    System.out.println("\tesquema: " + resultSetTables.getString(2));
-                    System.out.println("\tnombre tabla: " + resultSetTables.getString(3));
-                    System.out.println("\ttipo: " + resultSetTables.getString(4));
-                    System.out.println("\tcomentarios: " + resultSetTables.getString(5));
-                    System.out.println("_______________________________________________");
-                    rsP = metaData.getPrimaryKeys(null, null, resultSetTables.getString(3));
-                    if (rsP.next()) {
-                        System.out.println("\t\tprimary key: " + rsP.getObject(4).toString());
-                    }
-                    rsF = metaData.getExportedKeys(null, null, resultSetTables.getString(3));
-                    while (rsP.next()) {
-                        System.out.println("\t\tforeign key: " + rsP.getObject(4).toString());
-                    }
-                    rsC = metaData.getColumns(null, null, resultSetTables.getString(3), null);
-                    while (rsC.next()) {
-                        System.out.println("\t\tColumna: " + rsC.getString(4) + "\t\t Tipo: " + rsC.getString(6));
-                    }
-                    rsC.close();
-                    rsF.close();
-                    rsP.close();
-
-                    System.out.println("-----------------------------------------------------\n");
-                }
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.err.println("Error connecting: " + sqle);
-        }
-    }*/
     
     public LinkedList<Procedure> getprocedures(Connection conexion, String bd) throws SQLException{
         LinkedList<Procedure> result=new LinkedList<Procedure>();        

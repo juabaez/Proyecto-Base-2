@@ -14,6 +14,7 @@ public class Atributo {
     public Atributo(String nombre, String tipo){
         this.nombre = nombre;
         this.tipo = tipo;
+        this.unq = false;
     }
     
     public Atributo(String nombre, String tipo, boolean pk, String refAAtributo, String refATabla, boolean unq) {
@@ -167,6 +168,13 @@ public class Atributo {
     public void setRefATabla(String refATabla) {
         this.refATabla = refATabla;
     }
+
+    @Override
+    public String toString() {
+        return "Atributo{" + "nombre=" + nombre + ", tipo=" + tipo + ", pk=" + pk + ", refAAtributo=" + refAAtributo + ", refATabla=" + refATabla + ", unq=" + unq + '}';
+    }
+    
+    
     
     
 }
