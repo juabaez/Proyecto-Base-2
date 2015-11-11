@@ -75,7 +75,7 @@ public class principalGUI extends javax.swing.JFrame {
 
         jLabel2.setText("Servidor:");
 
-        jtBD1.setText("comparar");
+        jtBD1.setText("comparar1");
 
         jLabel4.setText("Base de datos:");
 
@@ -145,7 +145,7 @@ public class principalGUI extends javax.swing.JFrame {
 
         jLabel3.setText("Servidor:");
 
-        jtBD2.setText("DB2_practica03_2");
+        jtBD2.setText("comparar2");
 
         jLabel7.setText("Base de datos:");
 

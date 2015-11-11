@@ -63,8 +63,6 @@ public class principal {
                 //mostrarDatosTablas(getTablas(conexion2, bd2));
                 con2.desconectar(conexion1);
                 
-    System.out.println(infoBD2.getTablas().get(0).getAtributos().get(1).toString());
-                
                 System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
             } catch(Exception e){
                 e.printStackTrace();
@@ -90,8 +88,8 @@ public class principal {
             try (ResultSet resultSetTables = metaData.getTables(bd, "public", null, tipo)) {
                 ResultSet rsP, rsC, rsF, rsU, rsI;
                 String[] titulos = {"enTabla", "enAtributo", "aTabla", "aAtributo"};
-                Object[][] datos = {};
-                DefaultTableModel clavesForaneas = new DefaultTableModel(datos, titulos);
+                //Object[][] datos = {};
+                //DefaultTableModel clavesForaneas = new DefaultTableModel(datos, titulos);
                 
                 //Se obtienen y guardan las tablas
                 while (resultSetTables.next()) {
@@ -119,24 +117,22 @@ public class principal {
                         }
                     }
                     
-                    
-                    //Obtencion de las claves foraneas, se guardan en un DefaultTableModel
-                    rsF = metaData.getExportedKeys(null, null, resultSetTables.getString(3));
-                    while (rsF.next()) {
-                        rsC = metaData.getColumns(null, null, resultSetTables.getString(3), null);
-                        String nombreColumna = "";
-                        for (int i = 0; i < rsF.getShort("KEY_SEQ") && nombreColumna.equals(""); i++) {
-                            rsC.next();
-                            if (i+1==rsF.getShort("KEY_SEQ")){
-                                nombreColumna = rsC.getString(4);
+                    //Se obtienen y guardan las claves foraneas
+                    rsF = metaData.getCrossReference(null, null, resultSetTables.getString(3), null, null, null);
+                    while (rsF.next()){
+                        //System.out.println(rsF.getString("FKTABLE_NAME")+" - "+rsF.getString("FKCOLUMN_NAME")+" - "+rsF.getString("PKCOLUMN_NAME")+ " - "+rsF.getString("PKTABLE_NAME"));
+                        for (int i = 0; i < tablas.size(); i++) {
+                            for (int j = 0; j < tablas.get(i).getAtributos().size(); j++) {
+                                if (tablas.get(i).getAtributos().get(j).getNombre().equals(rsF.getString("FKCOLUMN_NAME"))){
+                                    tablas.get(i).getAtributos().get(j).setRefAAtributo(rsF.getString("PKCOLUMN_NAME"));
+                                    tablas.get(i).getAtributos().get(j).setRefATabla(rsF.getString("PKTABLE_NAME"));
+                                }
                             }
                         }
-                        //System.out.println(tablaActual.getNombre()+"\tforeign key: " + rsF.getString("FKTABLE_NAME") + " " +rsF.getString("FKCOLUMN_NAME")+ " "+nombreColumna);
-                        //                    "enTabla",            "enAtributo", "aTabla",                    "aAtributo"
-                        String[] fila = {tablaActual.getNombre(), nombreColumna, rsF.getString("FKTABLE_NAME"), rsF.getString("FKCOLUMN_NAME")};
-                        clavesForaneas.addRow(fila);
+                        
+                        
                     }
-                    
+                   
                     
                     //Se obtienen y guardan las claves unicas     
                     rsU = metaData.getIndexInfo(null, null, tablaActual.getNombre(), true, false);
@@ -170,22 +166,6 @@ public class principal {
                     rsP.close();
                 }
 
-                //Se guardan las claves foraneas en los atributos que corresponden
-                for (int i = 0; i < clavesForaneas.getRowCount(); i++) {
-                    String nombreTabla = (String)clavesForaneas.getValueAt(i, 2);
-                    for (int j = 0; j < tablas.size(); j++) {
-                        if (tablas.get(j).getNombre().equals(nombreTabla)){
-                            String nombreColumna = "";
-                            for (int k = 0; k < tablas.get(j).getAtributos().size(); k++) {
-                                nombreColumna = tablas.get(j).getAtributos().get(k).getNombre();
-                                if (nombreColumna.equals((String)clavesForaneas.getValueAt(i, 3))){
-                                    tablas.get(j).getAtributos().get(k).setRefATabla((String)clavesForaneas.getValueAt(i, 0));
-                                    tablas.get(j).getAtributos().get(k).setRefAAtributo((String)clavesForaneas.getValueAt(i, 1));
-                                }
-                            }
-                        }
-                    }
-                }
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
