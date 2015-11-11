@@ -14,17 +14,15 @@ import java.util.LinkedList;
 public class informacionBD {
     
     private LinkedList<Tabla> tablas;//listado de tablas existentes
-    private LinkedList<Trigger> triggers;//listado de triggers existentes
     private LinkedList<Procedure> procedimientos;//LinkedList<String> debera ser LinkedList<Procedimientos> se tiene que cambiar
     private String nombre = "";
     
     public informacionBD(){
     }
     
-    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Trigger> triggers, LinkedList<Procedure> procedimientos){
+    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Procedure> procedimientos){
         this.nombre = nombre;
         this.tablas = tablas;
-        this.triggers = triggers;
         this.procedimientos = procedimientos;
     }
     
@@ -37,7 +35,14 @@ public class informacionBD {
      */
     public String comparacion(informacionBD base01, informacionBD base02){
         String resultado = "";
-        String tablasComunes = "";
+        resultado = resultado + compararTablas(base01, base02);
+        
+        return resultado;
+    }
+
+    public String compararTablas(informacionBD base01, informacionBD base02){
+        String resultado = "";
+        String tablasComunes = "\t";
         String adicionales1 = "";
         String adicionales2 = "";
         if (base01.getTablas().size()>0){
@@ -51,9 +56,9 @@ public class informacionBD {
                     }
                 }
                 if (encontrada){
-                    tablasComunes = tablasComunes + tablaBuscada.getNombre()+"\n";
+                    tablasComunes = tablasComunes + tablaBuscada.getNombre()+"\n\t";
                 } else {
-                    adicionales1 = adicionales1 + tablaBuscada.getNombre()+"\n";
+                    adicionales1 = adicionales1 + tablaBuscada.getNombre()+"\n\t";
                 }
             }
         } else {
@@ -70,7 +75,7 @@ public class informacionBD {
                     }
                 }
                 if (!encontrada){
-                    adicionales2 = adicionales2 + tablaBuscada.getNombre()+"\n";
+                    adicionales2 = adicionales2 + tablaBuscada.getNombre()+"\n\t";
                 }
             }
         } else {
@@ -79,17 +84,17 @@ public class informacionBD {
         if (adicionales1.equals("") && adicionales2.equals("")){
             resultado = resultado + "+ Las bases de datos tienen las mismas tablas:\n"+tablasComunes;
         } else {
-            resultado = resultado + "- Las bases de datos no tienen las mismas tablas.\nTablas comunes:\n:"+tablasComunes;
+            resultado = resultado + "- Las bases de datos no tienen las mismas tablas.\nTablas comunes:\n"+tablasComunes;
             if (adicionales1.equals("")){
-                resultado = resultado + "  La base de datos "+base01.getNombre()+" no tiene tablas adicionales.";
+                resultado = resultado + "\n- La base de datos "+base01.getNombre()+" no tiene tablas adicionales.";
             } else {
-                resultado = resultado + "  La base de datos "+base01.getNombre()+" tiene las siguientes tablas adicionales:\n"+
+                resultado = resultado + "\nLa base de datos "+base01.getNombre()+" tiene las siguientes tablas adicionales:\n"+
                         adicionales1;
             }
-            if (adicionales1.equals("")){
-                resultado = resultado + "  La base de datos "+base01.getNombre()+" no tiene tablas adicionales.";
+            if (adicionales2.equals("")){
+                resultado = resultado + "\n- La base de datos "+base02.getNombre()+" no tiene tablas adicionales.";
             } else {
-                resultado = resultado + "  La base de datos "+base02.getNombre()+" tiene las siguientes tablas adicionales:\n"+
+                resultado = resultado + "\n- La base de datos "+base02.getNombre()+" tiene las siguientes tablas adicionales:\n\t"+
                         adicionales2;
             }
         }
@@ -100,7 +105,13 @@ public class informacionBD {
         //base01.comparacion(base01, base02) que base02.comparacion(base02, base01)
         return resultado;
     }
-
+    
+    public String comprarAtributos(informacionBD base01, informacionBD base02){
+        String resultado = "";
+        
+        return resultado;
+    }
+    
     /**
      * @return the tablas
      */
@@ -113,20 +124,6 @@ public class informacionBD {
      */
     public void setTablas(LinkedList<Tabla> tablas) {
         this.tablas = tablas;
-    }
-
-    /**
-     * @return the triggers
-     */
-    public LinkedList<Trigger> getTriggers() {
-        return triggers;
-    }
-
-    /**
-     * @param triggers the triggers to set
-     */
-    public void setTriggers(LinkedList<Trigger> triggers) {
-        this.triggers = triggers;
     }
 
     /**

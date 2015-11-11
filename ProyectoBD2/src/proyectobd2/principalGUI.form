@@ -264,6 +264,9 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JTextField" name="jtHost2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="localhost"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
@@ -286,6 +289,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jtUsuario2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="postgres"/>
+          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jtUsuario2ActionPerformed"/>
           </Events>
@@ -296,6 +302,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JPasswordField" name="jtContrasena2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="root"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

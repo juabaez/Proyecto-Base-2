@@ -141,6 +141,8 @@ public class principalGUI extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Base de datos Nro 2"));
 
+        jtHost2.setText("localhost");
+
         jLabel3.setText("Servidor:");
 
         jtBD2.setText("DB2_practica03_2");
@@ -149,6 +151,7 @@ public class principalGUI extends javax.swing.JFrame {
 
         jLabel8.setText("Usuario:");
 
+        jtUsuario2.setText("postgres");
         jtUsuario2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtUsuario2ActionPerformed(evt);
@@ -156,6 +159,8 @@ public class principalGUI extends javax.swing.JFrame {
         });
 
         jLabel9.setText("Contraseña:");
+
+        jtContrasena2.setText("root");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

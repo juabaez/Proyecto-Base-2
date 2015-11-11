@@ -24,6 +24,7 @@ public class Tabla {
     
     public Tabla(String nombre){
         this.atributos = new LinkedList<Atributo>();
+        this.indices = new LinkedList<Indice>();
         this.nombre = nombre;
     }
     
@@ -31,6 +32,12 @@ public class Tabla {
         LinkedList<Atributo> atributos = this.getAtributos();
         atributos.add(nuevo);
         this.setAtributos(atributos);
+    }
+    
+    public void agregarIndice(Indice indice){
+        LinkedList<Indice> indices = this.getIndices();
+        indices.add(indice);
+        this.setIndices(indices);
     }
 
     /**

@@ -25,7 +25,7 @@ public class ConexionDB {
         if (conexion==null){
             try{
                 conexion = DriverManager.getConnection("jdbc:postgresql://"+servidor+"/"+bd, usuario,contrasena);
-                System.out.println("Conexion ok");
+                //System.out.println("Conexion ok");
             }catch(SQLException ex){
                 conexion=null;
                 ex.printStackTrace();

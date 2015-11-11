@@ -46,12 +46,25 @@ public class principal {
             usuario1 = ventana.getJtUsuario1().getText();
             contrasena1 = ventana.getJtContrasena1().getText();
             bd1 = ventana.getJtBD1().getText();
+            servidor2 = ventana.getJtHost2().getText();
+            usuario2 = ventana.getJtUsuario2().getText();
+            contrasena2 = ventana.getJtContrasena2().getText();
+            bd2 = ventana.getJtBD2().getText();
             try {
                 ConexionDB con = new ConexionDB();
                 conexion1 = con.getConexion(servidor1, bd1, usuario1, contrasena1);
-                //listarTablas(conexion1, bd1);
-                mostrarDatosTablas(getTablas(conexion1, bd1));
+                infoBD1 = new informacionBD(bd1, getTablas(conexion1, bd1), null);
+                //mostrarDatosTablas(getTablas(conexion1, bd1));
                 con.desconectar(conexion1);
+                
+                ConexionDB con2 = new ConexionDB();
+                conexion2 = con2.getConexion(servidor2, bd2, usuario2, contrasena2);
+                infoBD2 = new informacionBD(bd2, getTablas(conexion2, bd2), null);
+                //mostrarDatosTablas(getTablas(conexion2, bd2));
+                con2.desconectar(conexion1);
+                
+                
+                System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -59,7 +72,6 @@ public class principal {
         
     }
     
-
     
     /**
      * Metodo que retorna una Lista de tablas con, de donde se puden obtener sus atributos, claves foraneas, primarias y unicas
@@ -75,7 +87,7 @@ public class principal {
             String[] tipo = {"TABLE"};
             DatabaseMetaData metaData = conexion.getMetaData();            
             try (ResultSet resultSetTables = metaData.getTables(bd, "public", null, tipo)) {
-                ResultSet rsP, rsC, rsF, rsU;
+                ResultSet rsP, rsC, rsF, rsU, rsI;
                 String[] titulos = {"enTabla", "enAtributo", "aTabla", "aAtributo"};
                 Object[][] datos = {};
                 DefaultTableModel clavesForaneas = new DefaultTableModel(datos, titulos);
@@ -139,7 +151,19 @@ public class principal {
                             }
                         }
                     }
+                    
+                    //Se obtienen y guardan los Triggers
+                    tablaActual.setTriggers(tablaActual.listaTrigger(tablaActual.getNombre(), conexion));
+                    Statement s = conexion.createStatement();
+                    rsI = s.executeQuery ("SELECT indexname, indexdef FROM pg_indexes WHERE tablename = '"+tablaActual.getNombre()+"';");
+                    while (rsI.next()) {
+                        Indice indice = new Indice(rsI.getString("indexname"), rsI.getString("indexdef"));
+                        tablaActual.agregarIndice(indice);
+                    }
+                    
+                    //Se agrega la tabla al listado de tablas de la base de datos
                     tablas.add(tablaActual);
+                    
                     rsC.close();
                     rsF.close();
                     rsP.close();
