@@ -6,6 +6,7 @@
 package proyectobd2;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,15 @@ public class Procedure {
     private String nombre;
     private String retorno;
     private LinkedList<String> parametros;
+    private boolean encontroIgual;
+
+    public boolean isEncontroIgual() {
+        return encontroIgual;
+    }
+
+    public void setEncontroIgual(boolean encontroIgual) {
+        this.encontroIgual = encontroIgual;
+    }
 
     public Procedure(String nom,String ret){
         this.nombre=nom;
@@ -72,12 +82,18 @@ public class Procedure {
     
     @Override
     public String toString() {
-        String res= "";
-        res += parametros.getFirst();
-        for (int i = 1; i < parametros.size(); i++) {
-            res += ", "+parametros.get(i);
+        String res= "(";
+        try{
+            res += parametros.getFirst();
+            for (int i = 1; i < parametros.size(); i++) {
+                res += ", "+parametros.get(i);
+            }
+            res +=")";
+        }catch(NoSuchElementException e){
+            res+="NO POSEE PARAMETROS)";
         }
-        return "Procedure{\n\t" + "nombre: " + nombre + "\n\tretorno: " + retorno + "\n\tparametros: "+res+"\n}";
+        return "\nProcedure{\n\t" + "nombre: " + nombre + "\n\tretorno: " + retorno + "\n\tparametros: "+res+"\n}";
     }
+    
     
 }

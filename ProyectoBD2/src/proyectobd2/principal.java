@@ -202,22 +202,89 @@ public class principal {
                      retorno="Devuelve un valor de retorno";
                  }
                  Procedure proc=new Procedure(resultSetProcedure.getNString(3),retorno);
-                 /*
-                 **
-                 ** Falta meter el codigo para los parametros... resultSetParameter
-                 **
-                 */
+                 resultSetParameter=metaData.getProcedureColumns(bd, "public", proc.getNombre(), null);
+                 LinkedList<String> listParametros=new LinkedList<String>();
+                 while(resultSetParameter.next()){
+                     String parametros=resultSetParameter.getString(4)+" | "+
+                                       evalucionTipoParametro(resultSetParameter.getString(5))+" | "+
+                                       resultSetParameter.getString(7);
+                     listParametros.add(parametros);
+                 }
+                 proc.setParametros(listParametros);
+                 result.add(proc);
+                 resultSetParameter.close();
              }
-             
-             
              resultSetProcedure.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.err.println("Error connecting: " + sqle);
         }
-        
-        
         return result;
+    }
+    
+    private String evalucionTipoParametro(String tipo){
+        switch (tipo) {
+            case "procedureColumnUnknown":
+                tipo="No se sabe";
+                break;
+            case "procedureColumnIn":
+                tipo="parametro IN";
+                break;
+            case "procedureColumnInOut":
+                tipo="parametro INOUT";
+                break;
+            case "procedureColumnOut":
+                tipo="parametro OUT";
+                break;
+            case "procedureColumnReturn":
+                tipo="valor de retorno del procedimiento";
+                break;
+            case "procedureColumnResult":
+                tipo="columna de resultados en ResultSet";
+                break;
+        }
+        return tipo;
+    }
+    
+    
+    public boolean CompararProcedimientos(Procedure otro){
+        boolean igual=false;
+        if(this.equals(otro)){
+            return true;
+        }
+        return igual;
+    }
+    
+    public void mostrarProcedimientos(LinkedList<Procedure> proc1,LinkedList<Procedure> proc2/*, anadir estructura (archivo de scritura)*/){
+        LinkedList<Procedure> resultadoIgual=new LinkedList<Procedure>();
+        LinkedList<Procedure> resultadoDistinto=new LinkedList<Procedure>();
+        boolean encontro=false;
+        for(Procedure proc11 : proc1){
+            for (Procedure proc21 : proc2) {
+                if(proc11.equals(proc21)){
+                    encontro=true;
+                    resultadoIgual.add(proc11);
+                }
+            }
+            if(!encontro){
+                resultadoDistinto.add(proc11);
+            }else{
+                encontro=false;
+            }
+        }
+        /*
+        ** EN CASO DE SER ARCHIVOS CAMBIAR LOS shout por archivo.write..............
+        */
+        System.out.println("Procedimientos iguales: \n");
+        for(Procedure resI : resultadoIgual){
+            System.out.println(resI.toString());
+        }
+        
+        System.out.println("Procedimientos distintos: \n");
+        for(Procedure resD : resultadoDistinto){
+            System.out.println(resD.toString());
+        }
+        System.out.println(proc1.toString());
     }
     
 }
