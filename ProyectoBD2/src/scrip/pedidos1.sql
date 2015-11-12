@@ -1,12 +1,8 @@
-CREATE DATABASE pedidos1
---   WITH OWNER = postgres
---        ENCODING = 'UTF8'
---        TABLESPACE = pg_default
---        LC_COLLATE = 'Spanish_Spain.1252'
---        LC_CTYPE = 'Spanish_Spain.1252'
---        CONNECTION LIMIT = -1;
-        
---CREACION DE TABLAS
+-- CREEN LAS BASES DE DATOS ANTES DE EJECUTAR EL SCRIPT
+﻿
+
+-- CREACION DE TABLAS
+
 CREATE TABLE EMPLEADOS(
     EMPLEADOID int NOT NULL,
     NOMBRE char(30) NULL,
@@ -108,43 +104,45 @@ REFERENCES PROVEEDORES (PROVEEDORID);
 
 
 -- todas las ordenes tienen descuento del 20
-CREATE OR REPLACE FUNCTION actualizar_DESCUENTO() RETURNS TRIGGER AS $trigger_ejemplo$
+CREATE OR REPLACE FUNCTION actualizar_DESCUENTO() RETURNS TRIGGER AS $trigger_descuento$
   BEGIN
        NEW.DESCUENTO := 20 ;
        RETURN NEW;
   END;
-$trigger_ejemplo$ LANGUAGE plpgsql;
+$trigger_descuento$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_ejemplo
-BEFORE INSERT OR UPDATE ON 'ORDENES'
+CREATE TRIGGER trigger_descuento
+BEFORE INSERT OR UPDATE ON ORDENES
     FOR EACH ROW EXECUTE PROCEDURE actualizar_DESCUENTO();
 
 
 
 -- si la descripcion es null entonces cargar string "NO HAY DESCRIPCION DEL PRODUCTO" en pedidos2 no se encuentra
-CREATE OR REPLACE FUNCTION actualizar_DESCRIPCIONProducto(char(50)) RETURNS TRIGGER AS $trigger_ejemplo$
-declare
-  desc ALIAS FOR $1;
+CREATE OR REPLACE FUNCTION actualizar_DESCRIPCIONProducto() RETURNS TRIGGER AS $trigger_descripcion$
   BEGIN
-       IF NULL=desc THEN
+       IF NULL=new.DESCRPCION THEN
             new.DESCRIPCION="NO HAY DESCRIPCION DEL PRODUCTO";
        END IF; 
        RETURN NEW;
   END;
-$trigger_ejemplo$ LANGUAGE plpgsql;
+$trigger_descripcion$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_ejemplo
-BEFORE INSERT OR UPDATE ON 'ORDENES'
-    FOR EACH ROW EXECUTE PROCEDURE actualizar_DESCRIPCIONProducto(new.DESCRIPCION);
+CREATE TRIGGER trigger_descripcion
+BEFORE INSERT OR UPDATE ON ORDENES
+    FOR EACH ROW EXECUTE PROCEDURE actualizar_DESCRIPCIONProducto();
 
 
 --buscar cedula de un cliente
-CREATE OR REPLACE FUNCTION retornarClienteCedula(int) RETURNS char(10) AS
-   'select CEDULA_RUC from CLIENTES where CLIENTEID=$1;'
- language plpgsql;
+CREATE OR REPLACE FUNCTION retornarClienteCedula(int) RETURNS varchar AS'
+BEGIN
+	SELECT CLIENTES.CEDULA_RUC from CLIENTES where CLIENTES.CLIENTEID=$1;
+END;
+'language plpgsql;
 
 
 --buscar nombre de proveedor, no aparece en pedidos2
- CREATE OR REPLACE FUNCTION retornarNombreProv(int) RETURNS char(10) AS
-   'select NOMBREPROV from PROVEEDORES where PROVEEDORID=$1;'
- language plpgsql;
+CREATE OR REPLACE FUNCTION retornarNombreProv(int) RETURNS varchar AS'
+BEGIN
+	select PROVEEDORES.NOMBREPROV from PROVEEDORES where PROVEEDORES.PROVEEDORID=$1;
+END;
+ 'language plpgsql;
