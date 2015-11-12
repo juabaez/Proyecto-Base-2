@@ -151,6 +151,8 @@ public class principal {
                     
                     //Se obtienen y guardan los Triggers
                     tablaActual.setTriggers(tablaActual.listaTrigger(tablaActual.getNombre(), conexion));
+                    
+                    //Se obtienen y guardan los Indices
                     Statement s = conexion.createStatement();
                     rsI = s.executeQuery ("SELECT indexname, indexdef FROM pg_indexes WHERE tablename = '"+tablaActual.getNombre()+"';");
                     while (rsI.next()) {

@@ -116,28 +116,56 @@ public class Trigger {
      */
     public String comparacionTrigger(Trigger otro, String nombreBD1, String nombreBD2){
         String resultado = "";
-        int i=0;
+        String condiciones1 = "";
+        String condiciones2 = "";
+        for (int i = 0; i < this.getCondicion().size(); i++) {
+            System.out.println("PROBANDO trigger "+this.nombre+" - "+this.getCondicion().get(i));
+            if (!condiciones1.equals("")){
+                condiciones1 = condiciones1 + " - ";
+            }
+            condiciones1 = condiciones1 + this.getCondicion().get(i);
+        }
+        for (int i = 0; i < otro.getCondicion().size(); i++) {
+            if (!condiciones2.equals("")){
+                condiciones2 = condiciones2 + " - ";
+            }
+            condiciones2 = condiciones2 + otro.getCondicion().get(i);
+        }    
+        
+        if(!condiciones1.equals(condiciones2)){
+            resultado = resultado + "El trigger '"+this.getNombre()+"' en la base de datos '"+nombreBD1+"' tiene como condiciones de disparo: "+condiciones1+
+                    " mientras que en la base de datos '"+nombreBD2+"' tiene como condiciones de disparo: "+condiciones2;
+        }
+        if (!this.getDisparador().equals(otro.getDisparador())){
+            resultado = resultado + "El trigger '"+this.getNombre()+"' en la base de datos '"+nombreBD1+"' tiene como disparador '"+this.getDisparador()+
+                    "' mientras que en la base de datos '"+nombreBD2+"' tiene como disparador '"+otro.getDisparador()+"'";
+        }
+        
+        /*int i=0;
         int j=0;
         while (i<this.condicion.size() && j<otro.getCondicion().size()){
             if (!this.condicion.get(i).equals(otro.getCondicion().get(j))) {
-                resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
-                    "mientras que en la base de datos "+nombreBD2+" tiene como condicion de disparo "+otro.getDisparador();
+                resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.condicion.get(i)+
+                    " mientras que en la base de datos "+nombreBD2+" tiene como condicion de disparo "+otro.getCondicion().get(j);
             }
             i++;
             j++;
         }
         while (i<this.condicion.size()) {
-            resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
-                "mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo ";
+            resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.condicion.get(i)+
+                " mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo ";
+            i++;
         }
         while (j<otro.getCondicion().size()) {
-                resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+this.disparador+
-                    "mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo";
+            System.out.println("indice: "+j+"tamaño: "+otro.getCondicion().size());    
+            resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como condicion de disparo "+otro.getCondicion().get(j)+
+                    " mientras que en la base de datos "+nombreBD2+" no lo tiene como condicion de disparo";
+            j++;
         }
         if (!this.disparador.equals(otro.getDisparador())) {
             resultado = resultado + "El trigger "+this.nombre+" en la base de datos "+nombreBD1+" tiene como disparador "+this.disparador+
-                    "mientras que en la base de datos "+nombreBD2+" tiene como disparador "+otro.getDisparador();
-        }
+                    " mientras que en la base de datos "+nombreBD2+" tiene como disparador "+otro.getDisparador();
+        }*/
         return resultado;
     }
     

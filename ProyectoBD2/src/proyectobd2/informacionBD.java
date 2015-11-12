@@ -38,6 +38,9 @@ public class informacionBD {
         resultado = resultado + compararTablas(base01, base02);
         resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE ATRIBUTOS:\n\t-------------------------\n";
         resultado = resultado + compararAtributos(base01, base02);
+        resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE TRIGGERS:\n\t-------------------------\n";
+        resultado = resultado + compararTriggers(base01, base02);
+        
         return resultado;
     }
 
@@ -184,20 +187,80 @@ public class informacionBD {
     }
     
     public String compararTriggers(informacionBD base01, informacionBD base02){
-        String resultado ="";
+        String resultado = "";
         for (int i = 0; i < base01.getTablas().size(); i++) {
             Tabla tablaBD1 = base01.getTablas().get(i);
-            boolean encontrada = false;
-            for (int j = 0; j < base02.getTablas().size() && !encontrada; j++) {
-                Tabla tablaBD2 =  base02.getTablas().get(j);
+            for (int j = 0; j < base02.getTablas().size(); j++) {
+                Tabla tablaBD2 = base02.getTablas().get(j);
+                String comunes = "\t";
+                String adicionales1 = "";
+                String adicionales2 = "";
                 if (tablaBD1.getNombre().equals(tablaBD2.getNombre())){
-                    encontrada = true;
+                    String tabla = tablaBD1.getNombre();
+                    boolean mostrado = false;
+                    for (int k = 0; k < tablaBD1.getTriggers().size(); k++) {
+                        Trigger trig1 = tablaBD1.getTriggers().get(k);
+                        boolean encontrado =false;
+                        for (int m = 0; m < tablaBD2.getTriggers().size() && !encontrado; m++) {
+                            Trigger trig2 = tablaBD2.getTriggers().get(m);
+                            if (trig1.getNombre().equals(trig2.getNombre())) {
+                                encontrado = true;
+                                String res = trig1.comparacionTrigger(trig2, base01.getNombre(), base02.getNombre());
+                                if (!res.equals("")){
+                                    if (!mostrado){
+                                        res = "\nTabla "+tabla+":\n" +res;
+                                        mostrado = true;
+                                    }                                    
+                                    resultado = resultado + res;
+                                }
+                                
+                            }
+                        }
+                        if (encontrado){
+                            comunes = comunes + trig1.getNombre()+"\n\t";
+                        } else {
+                            adicionales1 = adicionales1 + trig1.getNombre()+"\n\t";
+                        }
+                    }
+                    for (int k = 0; k < tablaBD2.getTriggers().size(); k++) {
+                        Trigger trig2 = tablaBD2.getTriggers().get(k);
+                        boolean encontrado =false;
+                        for (int l = 0; l < tablaBD1.getTriggers().size() && !encontrado; l++) {
+                            Trigger trig1 = tablaBD1.getTriggers().get(l);
+                            if (trig1.getNombre().equals(trig2.getNombre())) {
+                                encontrado = true;
+                                //resultado = resultado + atrib2.comparacion(atrib1, base02.getNombre(), base01.getNombre());
+                            }
+                        }
+                        if (!encontrado){
+                            adicionales2 = adicionales2 + trig2.getNombre()+"\n\t";
+                        }
+                    }
+                    
+                    if (adicionales1.equals("") && adicionales2.equals("")){
+                        
+                        if (comunes.trim().equals("")){
+                            resultado = resultado + "\n+ En las tablas '"+tablaBD1.getNombre()+"' no existen triggers\n";
+                        } else {
+                            resultado = resultado + "\n+ Las tablas '"+tablaBD1.getNombre()+"' tienen los mismos triggers:\n"+comunes;
+                        }
+                    } else {
+                        resultado = resultado + "\n- Las tablas '"+tablaBD1.getNombre()+"' no tienen los mismos triggers:.\nTriggers comunes:\n"+comunes;
+                        if (adicionales1.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base01.getNombre()+" no tiene triggers adicionales.";
+                        } else {
+                            resultado = resultado + "\nLa tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base01.getNombre()+" tiene los siguientes triggers adicionales:\n"+
+                                    adicionales1;
+                        }
+                        if (adicionales2.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" no tiene triggers adicionales.";
+                        } else {
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" tiene los siguientes atributos adicionales:\n"+
+                                    adicionales2;
+                        }
+                    }
                 }
-            }
-            if (encontrada){
-                //tablasComunes = tablasComunes + tablaBD1.getNombre()+"\n\t";
-            } else {
-                //adicionales1 = adicionales1 + tablaBD1.getNombre()+"\n\t";
+                
             }
         }
         return resultado;

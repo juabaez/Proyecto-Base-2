@@ -88,16 +88,24 @@ public class Tabla {
         Statement s = con.createStatement();
         LinkedList<Trigger> lT = new LinkedList();
         LinkedList<String> nombTrigger = nombreTrigger(nombreT,s);
-        LinkedList<String> condTrigger = new LinkedList();
+        
         ResultSet rs;
         String disparador=null;
         for (int i = 0; i < nombTrigger.size(); i++) {
+            LinkedList<String> condTrigger = new LinkedList();
+            rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"' order by event_manipulation");
+            int u = 0;
+            while (rs.next()){
+                u++;
+            }
+            System.out.println("TAMAÑO U"+u);
             rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"' order by event_manipulation");
             while (rs.next()){
                 disparador = rs.getObject("action_timing").toString();
                 condTrigger.add(rs.getObject("event_manipulation").toString());
+                System.out.println("COND "+nombTrigger.get(i)+" - "+rs.getObject("event_manipulation").toString());
             }
-            lT.add(new Trigger(nombreT, condTrigger, disparador));
+            lT.add(new Trigger(nombTrigger.get(i), condTrigger, disparador));
         }
         s.close();
         return lT;
