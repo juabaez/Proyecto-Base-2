@@ -55,14 +55,17 @@ public class principal {
                 conexion1 = con.getConexion(servidor1, bd1, usuario1, contrasena1);
                 infoBD1 = new informacionBD(bd1, getTablas(conexion1, bd1), null);
                 //mostrarDatosTablas(getTablas(conexion1, bd1));
+                infoBD1.setProcedimientos(this.getprocedures(conexion1, bd1));
                 con.desconectar(conexion1);
                 
                 ConexionDB con2 = new ConexionDB();
                 conexion2 = con2.getConexion(servidor2, bd2, usuario2, contrasena2);
                 infoBD2 = new informacionBD(bd2, getTablas(conexion2, bd2), null);
                 //mostrarDatosTablas(getTablas(conexion2, bd2));
+                infoBD2.setProcedimientos(this.getprocedures(conexion2, bd2));
                 con2.desconectar(conexion1);
                 
+                //infoBD1.mostrarProcedimientos(infoBD1.getProcedimientos(), infoBD2.getProcedimientos());
                 System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
             } catch(Exception e){
                 e.printStackTrace();
@@ -187,21 +190,21 @@ public class principal {
         }
     }
     
-    public LinkedList<Procedure> getprocedures(Connection conexion, String bd) throws SQLException{
-        LinkedList<Procedure> result=new LinkedList<Procedure>();        
+    public LinkedList<Procedimiento> getprocedures(Connection conexion, String bd) throws SQLException{
+        LinkedList<Procedimiento> result=new LinkedList<Procedimiento>();        
         DatabaseMetaData metaData = conexion.getMetaData();
         try (ResultSet resultSetProcedure = metaData.getProcedures(bd, "public", null)){
             ResultSet resultSetParameter;
              while (resultSetProcedure.next()) {
                  String retorno=resultSetProcedure.getString(8);
-                 if(retorno.equals("procedureResultUnknown")){
-                     retorno="No se puede determinar si el valor de retorno será devuelto";
-                 }else if(retorno.equals("procedureNoResult")){
-                     retorno= "No devuelve un valor de retorno";
-                 }else if(retorno.equals("procedureReturnsResult")){
-                     retorno="Devuelve un valor de retorno";
+                 if(retorno.equals("1")){
+                     retorno="no se puede determinar si retorna un valor";
+                 }else if(retorno.equals("2")){
+                     retorno= "no devuelve un valor de retorno";
+                 }else if(retorno.equals("3")){
+                     retorno="devuelve un valor de retorno";
                  }
-                 Procedure proc=new Procedure(resultSetProcedure.getNString(3),retorno);
+                 Procedimiento proc=new Procedimiento(resultSetProcedure.getString(3),retorno);
                  resultSetParameter=metaData.getProcedureColumns(bd, "public", proc.getNombre(), null);
                  LinkedList<String> listParametros=new LinkedList<String>();
                  while(resultSetParameter.next()){
@@ -247,44 +250,6 @@ public class principal {
     }
     
     
-    public boolean CompararProcedimientos(Procedure otro){
-        boolean igual=false;
-        if(this.equals(otro)){
-            return true;
-        }
-        return igual;
-    }
     
-    public void mostrarProcedimientos(LinkedList<Procedure> proc1,LinkedList<Procedure> proc2/*, anadir estructura (archivo de scritura)*/){
-        LinkedList<Procedure> resultadoIgual=new LinkedList<Procedure>();
-        LinkedList<Procedure> resultadoDistinto=new LinkedList<Procedure>();
-        boolean encontro=false;
-        for(Procedure proc11 : proc1){
-            for (Procedure proc21 : proc2) {
-                if(proc11.equals(proc21)){
-                    encontro=true;
-                    resultadoIgual.add(proc11);
-                }
-            }
-            if(!encontro){
-                resultadoDistinto.add(proc11);
-            }else{
-                encontro=false;
-            }
-        }
-        /*
-        ** EN CASO DE SER ARCHIVOS CAMBIAR LOS shout por archivo.write..............
-        */
-        System.out.println("Procedimientos iguales: \n");
-        for(Procedure resI : resultadoIgual){
-            System.out.println(resI.toString());
-        }
-        
-        System.out.println("Procedimientos distintos: \n");
-        for(Procedure resD : resultadoDistinto){
-            System.out.println(resD.toString());
-        }
-        System.out.println(proc1.toString());
-    }
     
 }

@@ -13,22 +13,13 @@ import java.util.Objects;
  *
  * @author mery
  */
-public class Procedure {
+public class Procedimiento {
     
     private String nombre;
     private String retorno;
     private LinkedList<String> parametros;
-    private boolean encontroIgual;
 
-    public boolean isEncontroIgual() {
-        return encontroIgual;
-    }
-
-    public void setEncontroIgual(boolean encontroIgual) {
-        this.encontroIgual = encontroIgual;
-    }
-
-    public Procedure(String nom,String ret){
+    public Procedimiento(String nom,String ret){
         this.nombre=nom;
         this.retorno=ret;
         this.parametros=new LinkedList<String>();
@@ -67,7 +58,7 @@ public class Procedure {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Procedure other = (Procedure) obj;
+        final Procedimiento other = (Procedimiento) obj;
         if (!Objects.equals(this.nombre, other.nombre)) {
             return false;
         }

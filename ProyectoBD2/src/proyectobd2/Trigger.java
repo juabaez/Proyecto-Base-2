@@ -119,7 +119,7 @@ public class Trigger {
         String condiciones1 = "";
         String condiciones2 = "";
         for (int i = 0; i < this.getCondicion().size(); i++) {
-            System.out.println("PROBANDO trigger "+this.nombre+" - "+this.getCondicion().get(i));
+            //System.out.println("PROBANDO trigger "+this.nombre+" - "+this.getCondicion().get(i));
             if (!condiciones1.equals("")){
                 condiciones1 = condiciones1 + " - ";
             }

@@ -14,13 +14,13 @@ import java.util.LinkedList;
 public class informacionBD {
     
     private LinkedList<Tabla> tablas;//listado de tablas existentes
-    private LinkedList<Procedure> procedimientos;//LinkedList<String> debera ser LinkedList<Procedimientos> se tiene que cambiar
+    private LinkedList<Procedimiento> procedimientos;//LinkedList<String> debera ser LinkedList<Procedimientos> se tiene que cambiar
     private String nombre = "";
     
     public informacionBD(){
     }
     
-    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Procedure> procedimientos){
+    public informacionBD(String nombre, LinkedList<Tabla> tablas, LinkedList<Procedimiento> procedimientos){
         this.nombre = nombre;
         this.tablas = tablas;
         this.procedimientos = procedimientos;
@@ -40,7 +40,8 @@ public class informacionBD {
         resultado = resultado + compararAtributos(base01, base02);
         resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE TRIGGERS:\n\t-------------------------\n";
         resultado = resultado + compararTriggers(base01, base02);
-        
+        resultado = resultado + "\n\t-------------------------------------\n\tCOMPARACIÓN DE PROCEDIMIENTOS ALMACENADOS:\n\t-------------------------------------\n";
+        resultado = resultado + compararProcedimientos(base01, base02);
         return resultado;
     }
 
@@ -255,7 +256,7 @@ public class informacionBD {
                         if (adicionales2.equals("")){
                             resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" no tiene triggers adicionales.";
                         } else {
-                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" tiene los siguientes atributos adicionales:\n"+
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base02.getNombre()+" tiene los siguientes triggers adicionales:\n"+
                                     adicionales2;
                         }
                     }
@@ -265,6 +266,138 @@ public class informacionBD {
         }
         return resultado;
     }
+    
+    /*public boolean CompararProcedimientos(Procedimiento otro){
+        boolean igual=false;
+        if(this.equals(otro)){
+            return true;
+        }
+        return igual;
+    }*/
+    
+    private String procedimientoIguales(Procedimiento proc1, Procedimiento proc2, String nombreBD1, String nombreBD2){
+        String resultado = "";
+        if (!proc1.getRetorno().equals(proc2.getRetorno())){
+            resultado = resultado + "Mientras que el procedimiento '"+proc1.getNombre()+"' de la base de datos '"+nombreBD1+"' "+proc1.getRetorno()
+                    +" en la base de datos '"+nombreBD2+"' "+proc2.getRetorno();
+        }
+        String parametros1 = "";
+        for (int i = 0; i < proc1.getParametros().size(); i++) {
+            if (!parametros1.equals("")){
+                parametros1 = parametros1 + " - ";
+            }
+            parametros1 = parametros1 + proc1.getParametros().get(i);
+        }
+        String parametros2 = "";
+        for (int i = 0; i < proc2.getParametros().size(); i++) {
+            if (!parametros2.equals("")){
+                parametros2 = parametros2 + " - ";
+            }
+            parametros2 = parametros2 + proc2.getParametros().get(i);
+        }
+        if(!parametros1.equals(parametros2)){
+            resultado = resultado + "\nEl procedimiento '"+proc1.getNombre()+"' en la base de datos '"+nombreBD1+"' tiene los parametros: "+parametros1+
+                    " mientras que en la base de datos '"+nombreBD2+"' tiene los parametros: "+parametros2;
+        }
+        return resultado;
+    }
+    
+    public String compararProcedimientos(informacionBD base01, informacionBD base02){
+        String resultado = "";
+        String comunes = "\t";
+        String adicionales1 = "";
+        String adicionales2 = "";
+        for (int i = 0; i < base01.getProcedimientos().size(); i++) {
+            Procedimiento actual1= base01.getProcedimientos().get(i);
+            boolean encontrado = false;
+            for (int j = 0; j < base02.getProcedimientos().size() && !encontrado; j++) {
+                Procedimiento actual2 = base02.getProcedimientos().get(j);
+                if (actual1.getNombre().equals(actual2.getNombre())){
+                    resultado = resultado + procedimientoIguales(actual1,actual2,base01.getNombre(),base02.getNombre());
+                    encontrado = true;
+                }
+            }
+            if (encontrado){
+                comunes = comunes + actual1.getNombre() +"\n\t";;
+            } else {
+                adicionales1 = adicionales1 + actual1.getNombre()+"\n\t";
+            }
+        }
+        for (int i = 0; i < base02.getProcedimientos().size(); i++) {
+            Procedimiento actual2= base02.getProcedimientos().get(i);
+            boolean encontrado = false;
+            for (int j = 0; j < base01.getProcedimientos().size() && !encontrado; j++) {
+                Procedimiento actual1 = base01.getProcedimientos().get(j);
+                if (actual2.getNombre().equals(actual1.getNombre())){
+                    resultado = resultado + procedimientoIguales(actual2,actual1,base02.getNombre(),base01.getNombre());
+                    encontrado = true;
+                }
+            }
+            if (!encontrado){
+                adicionales2 = adicionales2 + actual2.getNombre()+"\n\t";
+            }
+        }
+        
+        if (adicionales1.equals("") && adicionales2.equals("")){
+            if (comunes.trim().equals("")){
+                resultado = resultado + "\n+ En las base de datos no existen procedimientos almacenados\n";
+            } else {
+                resultado = resultado + "\n+ Las bases de datos tienen los procedimientos almacenados:\n"+comunes;
+            }
+        } else {
+            if (comunes.equals("")){
+                comunes = "No hay procedimientos almacenados en común";
+            }
+            resultado = resultado + "\n- Las bases de datos no tienen los mismos procedimientos almacenados:.\nProcedimientos comunes:\n"+comunes;
+            if (adicionales1.equals("")){
+                resultado = resultado + "\n- La  base de datos "+base01.getNombre()+" no tiene procedimientos almacenados adicionales.";
+            } else {
+                resultado = resultado + "\nLa  base de datos "+base01.getNombre()+" tiene los siguientes procedimientos almacenados adicionales:\n"+
+                        adicionales1;
+            }
+            if (adicionales2.equals("")){
+                resultado = resultado + "\n- La  base de datos "+base02.getNombre()+" no tiene procedimientos almacenados adicionales.";
+            } else {
+                resultado = resultado + "\n- La  base de datos "+base02.getNombre()+" tiene los siguientes procedimientos almacenados adicionales:\n"+
+                        adicionales2;
+            }
+        }
+        
+        return resultado;
+    }
+    
+    //public void mostrarProcedimientos(LinkedList<Procedimiento> proc1, LinkedList<Procedimiento> proc2/*, anadir estructura (archivo de scritura)*/){
+    /*
+    LinkedList<Procedimiento> resultadoIgual=new LinkedList<Procedimiento>();
+        LinkedList<Procedimiento> resultadoDistinto=new LinkedList<Procedimiento>();
+        boolean encontro=false;
+        for(Procedimiento proc11 : proc1){
+            for (Procedimiento proc21 : proc2) {
+                if(proc11.equals(proc21)){
+                    encontro=true;
+                    resultadoIgual.add(proc11);
+                }
+            }
+            if(!encontro){
+                resultadoDistinto.add(proc11);
+            }else{
+                encontro=false;
+            }
+        }
+        
+         EN CASO DE SER ARCHIVOS CAMBIAR LOS shout por archivo.write..............
+        
+        System.out.println("Procedimientos iguales: \n");
+        for(Procedimiento resI : resultadoIgual){
+            System.out.println(resI.toString());
+        }
+        
+        System.out.println("Procedimientos distintos: \n");
+        for(Procedimiento resD : resultadoDistinto){
+            System.out.println(resD.toString());
+        }
+        System.out.println(proc1.toString());
+    }*/
     
     /**
      * @return the tablas
@@ -283,14 +416,14 @@ public class informacionBD {
     /**
      * @return the procedimientos
      */
-    public LinkedList<Procedure> getProcedimientos() {
+    public LinkedList<Procedimiento> getProcedimientos() {
         return procedimientos;
     }
 
     /**
      * @param procedimientos the procedimientos to set
      */
-    public void setProcedimientos(LinkedList<Procedure> procedimientos) {
+    public void setProcedimientos(LinkedList<Procedimiento> procedimientos) {
         this.procedimientos = procedimientos;
     }
 
@@ -307,6 +440,8 @@ public class informacionBD {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    
+    
     
     
 }
