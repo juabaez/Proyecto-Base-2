@@ -40,8 +40,10 @@ public class informacionBD {
         resultado = resultado + compararAtributos(base01, base02);
         resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN DE TRIGGERS:\n\t-------------------------\n";
         resultado = resultado + compararTriggers(base01, base02);
-        resultado = resultado + "\n\t-------------------------------------\n\tCOMPARACIÓN DE PROCEDIMIENTOS ALMACENADOS:\n\t-------------------------------------\n";
+        resultado = resultado + "\n\t------------------------------------------\n\tCOMPARACIÓN DE PROCEDIMIENTOS ALMACENADOS:\n\t------------------------------------------\n";
         resultado = resultado + compararProcedimientos(base01, base02);
+        resultado = resultado + "\n\t-------------------------\n\tCOMPARACIÓN INDICES:\n\t-------------------------\n";
+        resultado = resultado + compararIndices(base01, base02);
         return resultado;
     }
 
@@ -246,6 +248,9 @@ public class informacionBD {
                             resultado = resultado + "\n+ Las tablas '"+tablaBD1.getNombre()+"' tienen los mismos triggers:\n"+comunes;
                         }
                     } else {
+                        if (comunes.equals("")){
+                            comunes = "No hay triggers en común";
+                        }
                         resultado = resultado + "\n- Las tablas '"+tablaBD1.getNombre()+"' no tienen los mismos triggers:.\nTriggers comunes:\n"+comunes;
                         if (adicionales1.equals("")){
                             resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos "+base01.getNombre()+" no tiene triggers adicionales.";
@@ -275,32 +280,7 @@ public class informacionBD {
         return igual;
     }*/
     
-    private String procedimientoIguales(Procedimiento proc1, Procedimiento proc2, String nombreBD1, String nombreBD2){
-        String resultado = "";
-        if (!proc1.getRetorno().equals(proc2.getRetorno())){
-            resultado = resultado + "Mientras que el procedimiento '"+proc1.getNombre()+"' de la base de datos '"+nombreBD1+"' "+proc1.getRetorno()
-                    +" en la base de datos '"+nombreBD2+"' "+proc2.getRetorno();
-        }
-        String parametros1 = "";
-        for (int i = 0; i < proc1.getParametros().size(); i++) {
-            if (!parametros1.equals("")){
-                parametros1 = parametros1 + " - ";
-            }
-            parametros1 = parametros1 + proc1.getParametros().get(i);
-        }
-        String parametros2 = "";
-        for (int i = 0; i < proc2.getParametros().size(); i++) {
-            if (!parametros2.equals("")){
-                parametros2 = parametros2 + " - ";
-            }
-            parametros2 = parametros2 + proc2.getParametros().get(i);
-        }
-        if(!parametros1.equals(parametros2)){
-            resultado = resultado + "\nEl procedimiento '"+proc1.getNombre()+"' en la base de datos '"+nombreBD1+"' tiene los parametros: "+parametros1+
-                    " mientras que en la base de datos '"+nombreBD2+"' tiene los parametros: "+parametros2;
-        }
-        return resultado;
-    }
+    
     
     public String compararProcedimientos(informacionBD base01, informacionBD base02){
         String resultado = "";
@@ -313,7 +293,7 @@ public class informacionBD {
             for (int j = 0; j < base02.getProcedimientos().size() && !encontrado; j++) {
                 Procedimiento actual2 = base02.getProcedimientos().get(j);
                 if (actual1.getNombre().equals(actual2.getNombre())){
-                    resultado = resultado + procedimientoIguales(actual1,actual2,base01.getNombre(),base02.getNombre());
+                    resultado = resultado + actual1.procedimientoIguales(actual1,actual2,base01.getNombre(),base02.getNombre());
                     encontrado = true;
                 }
             }
@@ -329,7 +309,7 @@ public class informacionBD {
             for (int j = 0; j < base01.getProcedimientos().size() && !encontrado; j++) {
                 Procedimiento actual1 = base01.getProcedimientos().get(j);
                 if (actual2.getNombre().equals(actual1.getNombre())){
-                    resultado = resultado + procedimientoIguales(actual2,actual1,base02.getNombre(),base01.getNombre());
+                    resultado = resultado + actual2.procedimientoIguales(actual2,actual1,base02.getNombre(),base01.getNombre());
                     encontrado = true;
                 }
             }
@@ -366,38 +346,88 @@ public class informacionBD {
         return resultado;
     }
     
-    //public void mostrarProcedimientos(LinkedList<Procedimiento> proc1, LinkedList<Procedimiento> proc2/*, anadir estructura (archivo de scritura)*/){
-    /*
-    LinkedList<Procedimiento> resultadoIgual=new LinkedList<Procedimiento>();
-        LinkedList<Procedimiento> resultadoDistinto=new LinkedList<Procedimiento>();
-        boolean encontro=false;
-        for(Procedimiento proc11 : proc1){
-            for (Procedimiento proc21 : proc2) {
-                if(proc11.equals(proc21)){
-                    encontro=true;
-                    resultadoIgual.add(proc11);
+    public String compararIndices(informacionBD base01, informacionBD base02){
+        String resultado = "";
+        for (int i = 0; i < base01.getTablas().size(); i++) {
+            Tabla tablaBD1 = base01.getTablas().get(i);
+            for (int j = 0; j < base02.getTablas().size(); j++) {
+                Tabla tablaBD2 = base02.getTablas().get(j);
+                String comunes = "";
+                String adicionales1 = "";
+                String adicionales2 = "";
+                if (tablaBD1.getNombre().equals(tablaBD2.getNombre())){
+                    String tabla = tablaBD1.getNombre();
+                    boolean mostrado = false;
+                    for (int k = 0; k < tablaBD1.getIndices().size(); k++) {
+                        Indice indice1 = tablaBD1.getIndices().get(k);
+                        boolean encontrado =false;
+                        for (int m = 0; m < tablaBD2.getIndices().size() && !encontrado; m++) {
+                            Indice indice2 = tablaBD2.getIndices().get(m);
+                            if (indice1.getNombre().equals(indice2.getNombre())) {
+                                encontrado = true;
+                                String res = indice1.comparacionIndice(indice2, tabla, base01.getNombre(), base02.getNombre());
+                                if (!res.equals("")){
+                                    if (!mostrado){
+                                        res = "\nTabla "+tabla+":\n" +res;
+                                        mostrado = true;
+                                    }                                    
+                                    resultado = resultado + res;
+                                }
+                                
+                            }
+                        }
+                        if (encontrado){
+                            comunes = comunes + indice1.getNombre()+"\n\t";
+                        } else {
+                            adicionales1 = adicionales1 + indice1.getNombre()+"\n\t";
+                        }
+                    }
+                    for (int k = 0; k < tablaBD2.getIndices().size(); k++) {
+                        Indice indice2 = tablaBD2.getIndices().get(k);
+                        boolean encontrado =false;
+                        for (int l = 0; l < tablaBD1.getIndices().size() && !encontrado; l++) {
+                            Indice trig1 = tablaBD1.getIndices().get(l);
+                            if (trig1.getNombre().equals(indice2.getNombre())) {
+                                encontrado = true;
+                                //resultado = resultado + atrib2.comparacion(atrib1, base02.getNombre(), base01.getNombre());
+                            }
+                        }
+                        if (!encontrado){
+                            adicionales2 = adicionales2 + indice2.getNombre()+"\n\t";
+                        }
+                    }
+                    
+                    if (adicionales1.equals("") && adicionales2.equals("")){
+                        
+                        if (comunes.trim().equals("")){
+                            resultado = resultado + "\n+ En las tablas '"+tablaBD1.getNombre()+"' no existen indices\n";
+                        } else {
+                            resultado = resultado + "\n+ Las tablas '"+tablaBD1.getNombre()+"' tienen los mismos indices:\n"+comunes;
+                        }
+                    } else {
+                        if (comunes.equals("")){
+                            comunes = "No hay indices en común";
+                        }
+                        resultado = resultado + "\n- Las tablas '"+tablaBD1.getNombre()+"' no tienen los mismos indices:.\nIndices comunes:\n"+comunes;
+                        if (adicionales1.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos '"+base01.getNombre()+"' no tiene indices adicionales.";
+                        } else {
+                            resultado = resultado + "\nLa tabla '"+tablaBD1.getNombre()+"' de la  base de datos '"+base01.getNombre()+"' tiene los siguientes indices adicionales:\n"+
+                                    adicionales1;
+                        }
+                        if (adicionales2.equals("")){
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos '"+base02.getNombre()+"' no tiene indices adicionales.";
+                        } else {
+                            resultado = resultado + "\n- La tabla '"+tablaBD1.getNombre()+"' de la  base de datos '"+base02.getNombre()+"' tiene los siguientes indices adicionales:\n"+
+                                    adicionales2;
+                        }
+                    }
                 }
-            }
-            if(!encontro){
-                resultadoDistinto.add(proc11);
-            }else{
-                encontro=false;
+                
             }
         }
-        
-         EN CASO DE SER ARCHIVOS CAMBIAR LOS shout por archivo.write..............
-        
-        System.out.println("Procedimientos iguales: \n");
-        for(Procedimiento resI : resultadoIgual){
-            System.out.println(resI.toString());
-        }
-        
-        System.out.println("Procedimientos distintos: \n");
-        for(Procedimiento resD : resultadoDistinto){
-            System.out.println(resD.toString());
-        }
-        System.out.println(proc1.toString());
-    }*/
+        return resultado;
+    }
     
     /**
      * @return the tablas

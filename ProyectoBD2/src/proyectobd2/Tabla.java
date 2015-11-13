@@ -83,7 +83,8 @@ public class Tabla {
     public void setIndices(LinkedList<Indice> indices) {
         this.indices = indices;
     }
-       
+    
+    
     public LinkedList<Trigger> listaTrigger(String nombreT, Connection con) throws SQLException{
         Statement s = con.createStatement();
         LinkedList<Trigger> lT = new LinkedList();
@@ -98,12 +99,11 @@ public class Tabla {
             while (rs.next()){
                 u++;
             }
-            System.out.println("TAMAÑO U"+u);
             rs = s.executeQuery ("SELECT event_manipulation,action_timing FROM information_schema.triggers where trigger_name ='"+nombTrigger.get(i)+"' order by event_manipulation");
             while (rs.next()){
                 disparador = rs.getObject("action_timing").toString();
                 condTrigger.add(rs.getObject("event_manipulation").toString());
-                System.out.println("COND "+nombTrigger.get(i)+" - "+rs.getObject("event_manipulation").toString());
+                //System.out.println("COND "+nombTrigger.get(i)+" - "+rs.getObject("event_manipulation").toString());
             }
             lT.add(new Trigger(nombTrigger.get(i), condTrigger, disparador));
         }

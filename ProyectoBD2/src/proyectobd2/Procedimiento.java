@@ -86,5 +86,31 @@ public class Procedimiento {
         return "\nProcedure{\n\t" + "nombre: " + nombre + "\n\tretorno: " + retorno + "\n\tparametros: "+res+"\n}";
     }
     
+    public String procedimientoIguales(Procedimiento proc1, Procedimiento proc2, String nombreBD1, String nombreBD2){
+        String resultado = "";
+        if (!proc1.getRetorno().equals(proc2.getRetorno())){
+            resultado = resultado + "Mientras que el procedimiento '"+proc1.getNombre()+"' de la base de datos '"+nombreBD1+"' "+proc1.getRetorno()
+                    +" en la base de datos '"+nombreBD2+"' "+proc2.getRetorno();
+        }
+        String parametros1 = "";
+        for (int i = 0; i < proc1.getParametros().size(); i++) {
+            if (!parametros1.equals("")){
+                parametros1 = parametros1 + " - ";
+            }
+            parametros1 = parametros1 + proc1.getParametros().get(i);
+        }
+        String parametros2 = "";
+        for (int i = 0; i < proc2.getParametros().size(); i++) {
+            if (!parametros2.equals("")){
+                parametros2 = parametros2 + " - ";
+            }
+            parametros2 = parametros2 + proc2.getParametros().get(i);
+        }
+        if(!parametros1.equals(parametros2)){
+            resultado = resultado + "\nEl procedimiento '"+proc1.getNombre()+"' en la base de datos '"+nombreBD1+"' tiene los parametros: "+parametros1+
+                    " mientras que en la base de datos '"+nombreBD2+"' tiene los parametros: "+parametros2;
+        }
+        return resultado;
+    }
     
 }
