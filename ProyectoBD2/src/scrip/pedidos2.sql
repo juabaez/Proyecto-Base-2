@@ -111,3 +111,20 @@ BEGIN
     SELECT CLIENTES.CEDULA_RUC from CLIENTES where CLIENTES.CLIENTEID=$1;
 END;
 'language plpgsql;
+
+CREATE OR REPLACE FUNCTION ejemplo() RETURNS integer AS $$
+BEGIN
+ RETURN 104;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION ejemplo3() RETURNS integer AS $$
+BEGIN
+ RETURN 106;
+END;
+$$ LANGUAGE plpgsql;
+
+create index nombreEmp on EMPLEADOS(NOMBRE);
+create index nombreProv on PROVEEDORES(NOMBREPROV);

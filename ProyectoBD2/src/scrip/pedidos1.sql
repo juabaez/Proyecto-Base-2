@@ -146,3 +146,19 @@ BEGIN
 	select PROVEEDORES.NOMBREPROV from PROVEEDORES where PROVEEDORES.PROVEEDORID=$1;
 END;
  'language plpgsql;
+
+CREATE OR REPLACE FUNCTION ejemplo() RETURNS integer AS $$
+BEGIN
+ RETURN 104;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION ejemplo1() RETURNS integer AS $$
+BEGIN
+ RETURN 105;
+END;
+$$ LANGUAGE plpgsql;
+
+
+create index nombreProv on PROVEEDORES(NOMBREPROV);
+create index contactoProv on PROVEEDORES(CONTACTO);
