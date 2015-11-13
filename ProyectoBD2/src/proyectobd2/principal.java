@@ -5,6 +5,9 @@
  */
 package proyectobd2;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -12,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -40,6 +42,49 @@ public class principal {
     principal(principalGUI ventana){
         if (ventana.getJcBasesPorDefecto().isSelected()){
             //Se obtienen los datos por defecto
+            try{
+                File miDir = new File (".");
+                File archivo = new File (miDir.getCanonicalPath()+"\\config.txt");
+                FileReader fr = new FileReader (archivo);
+                BufferedReader br = new BufferedReader(fr);
+                String linea ="";
+                while((linea=br.readLine())!=null){
+                    if (linea.contains("Servidor1:")){
+                        servidor1 = linea.replace("Servidor1", "");
+                    } else if(linea.contains("BaseDeDatos1:")){
+                        usuario1 = linea.replace("BaseDeDatos1", "");
+                    } else if(linea.contains("usuario1:")){
+                        contrasena1 = linea.replace("usuario1", "");
+                    } else if(linea.contains("contrasena1:")){
+                        bd1 = linea.replace("contrasena1", "");
+                    } else if(linea.contains("Servidor2:")){
+                        servidor2 = linea.replace("Servidor2", "");
+                    } else if(linea.contains("BaseDeDatos2:")){
+                        usuario2 = linea.replace("BaseDeDatos2", "");
+                    } else if(linea.contains("usuario2:")){
+                        contrasena2 = linea.replace("usuario2", "");
+                    } else if(linea.contains("contrasena2:")){
+                        bd2 = linea.replace("contrasena2", "");
+                    }
+                }
+                if (datosConexionCorrectos()){
+                    cargarYComparar();
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+                System.out.println("No se ha podido leer el archivo.\nCree un archivo en la carpeta donde se encuentra este .jar, llamado config.txt con los siguientes datos: ");
+                System.out.println("Puede modificar los datos de este archivo para utilizar el sistema.\n" +
+                                    "Los datos no pueden tener espacios entre si.\n" +
+                                    "Servidor1:localhost\n" +
+                                    "BaseDeDatos1:comparar1\n" +
+                                    "usuario1:postgres\n" +
+                                    "contrasena1:root\n" +
+                                    "Servidor2:localhost\n" +
+                                    "BaseDeDatos2:comparar2\n" +
+                                    "usuario2:postgres\n" +
+                                    "contrasena2:root");
+            }
+            
         } else {
             //Se utilizan los datos asignados.
             servidor1 = ventana.getJtHost1().getText();
@@ -50,30 +95,64 @@ public class principal {
             usuario2 = ventana.getJtUsuario2().getText();
             contrasena2 = ventana.getJtContrasena2().getText();
             bd2 = ventana.getJtBD2().getText();
-            try {
-                ConexionDB con = new ConexionDB();
-                conexion1 = con.getConexion(servidor1, bd1, usuario1, contrasena1);
-                infoBD1 = new informacionBD(bd1, getTablas(conexion1, bd1), null);
-                //mostrarDatosTablas(getTablas(conexion1, bd1));
-                infoBD1.setProcedimientos(this.getprocedures(conexion1, bd1));
-                con.desconectar(conexion1);
-                
-                ConexionDB con2 = new ConexionDB();
-                conexion2 = con2.getConexion(servidor2, bd2, usuario2, contrasena2);
-                infoBD2 = new informacionBD(bd2, getTablas(conexion2, bd2), null);
-                //mostrarDatosTablas(getTablas(conexion2, bd2));
-                infoBD2.setProcedimientos(this.getprocedures(conexion2, bd2));
-                con2.desconectar(conexion1);
-                
-                //infoBD1.mostrarProcedimientos(infoBD1.getProcedimientos(), infoBD2.getProcedimientos());
-                System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
-            } catch(Exception e){
-                e.printStackTrace();
+            if (datosConexionCorrectos()){
+                cargarYComparar();
             }
         }
         
     }
     
+    private boolean datosConexionCorrectos(){
+        if (servidor1.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato Servidor1 no es correcto.");
+            return false;
+        } else if (usuario1.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato usuario1 no es correcto.");
+            return false;
+        } else if (contrasena1.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato contrasena1 no es correcto.");
+            return false;
+        } else if (bd1.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato BaseDeDatos1 no es correcto.");
+            return false;
+        } else if (servidor2.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato Servidor2 no es correcto.");
+            return false;
+        } else if (usuario2.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato usuario2 no es correcto.");
+            return false;
+        } else if (contrasena2.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato contrasena2 no es correcto.");
+            return false;
+        } else if (bd2.trim().equals("")){
+            System.out.println("ERROR DE CONEXION: El dato BaseDeDatos2 no es correcto.");
+            return false;
+        } 
+        return true;
+    }
+    
+    private void cargarYComparar(){
+        try {
+            ConexionDB con = new ConexionDB();
+            conexion1 = con.getConexion(servidor1, bd1, usuario1, contrasena1);
+            infoBD1 = new informacionBD(bd1, getTablas(conexion1, bd1), null);
+            //mostrarDatosTablas(getTablas(conexion1, bd1));
+            infoBD1.setProcedimientos(this.getprocedures(conexion1, bd1));
+            con.desconectar(conexion1);
+
+            ConexionDB con2 = new ConexionDB();
+            conexion2 = con2.getConexion(servidor2, bd2, usuario2, contrasena2);
+            infoBD2 = new informacionBD(bd2, getTablas(conexion2, bd2), null);
+            //mostrarDatosTablas(getTablas(conexion2, bd2));
+            infoBD2.setProcedimientos(this.getprocedures(conexion2, bd2));
+            con2.desconectar(conexion1);
+
+            //infoBD1.mostrarProcedimientos(infoBD1.getProcedimientos(), infoBD2.getProcedimientos());
+            System.out.println(infoBD1.comparacion(infoBD1, infoBD2));
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     
     /**
      * Metodo que retorna una Lista de tablas con, de donde se puden obtener sus atributos, claves foraneas, primarias y unicas
