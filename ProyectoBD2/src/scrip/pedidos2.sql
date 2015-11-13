@@ -117,3 +117,11 @@ BEGIN
  RETURN 104;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION ejemplo3() RETURNS integer AS $$
+BEGIN
+ RETURN 106;
+END;
+$$ LANGUAGE plpgsql;
