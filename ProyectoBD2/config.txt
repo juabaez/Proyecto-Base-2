@@ -1,0 +1,10 @@
+Puede modificar los datos de este archivo para utilizar el sistema.
+Los datos no pueden tener espacios entre si.
+Servidor1:localhost
+BaseDeDatos1:comparar1
+usuario1:postgres
+contrasena1:root
+Servidor2:localhost
+BaseDeDatos2:comparar2
+usuario2:postgres
+contrasena2:root

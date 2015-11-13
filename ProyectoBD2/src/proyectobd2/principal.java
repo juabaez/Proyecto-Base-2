@@ -43,36 +43,35 @@ public class principal {
         if (ventana.getJcBasesPorDefecto().isSelected()){
             //Se obtienen los datos por defecto
             try{
-                File miDir = new File (".");
-                File archivo = new File (miDir.getCanonicalPath()+"\\config.txt");
+                File archivo = new File (System.getProperty("user.dir")+"\\config.txt");
                 FileReader fr = new FileReader (archivo);
                 BufferedReader br = new BufferedReader(fr);
                 String linea ="";
                 while((linea=br.readLine())!=null){
                     if (linea.contains("Servidor1:")){
-                        servidor1 = linea.replace("Servidor1", "");
+                        servidor1 = linea.replace("Servidor1:", "");
                     } else if(linea.contains("BaseDeDatos1:")){
-                        usuario1 = linea.replace("BaseDeDatos1", "");
+                        bd1 = linea.replace("BaseDeDatos1:", "");
                     } else if(linea.contains("usuario1:")){
-                        contrasena1 = linea.replace("usuario1", "");
+                        usuario1 = linea.replace("usuario1:", "");
                     } else if(linea.contains("contrasena1:")){
-                        bd1 = linea.replace("contrasena1", "");
+                        contrasena1 = linea.replace("contrasena1:", "");
                     } else if(linea.contains("Servidor2:")){
-                        servidor2 = linea.replace("Servidor2", "");
+                        servidor2 = linea.replace("Servidor2:", "");
                     } else if(linea.contains("BaseDeDatos2:")){
-                        usuario2 = linea.replace("BaseDeDatos2", "");
+                        bd2 = linea.replace("BaseDeDatos2:", "");
                     } else if(linea.contains("usuario2:")){
-                        contrasena2 = linea.replace("usuario2", "");
+                        usuario2 = linea.replace("usuario2:", "");
                     } else if(linea.contains("contrasena2:")){
-                        bd2 = linea.replace("contrasena2", "");
+                        contrasena2 = linea.replace("contrasena2:", "");
                     }
                 }
                 if (datosConexionCorrectos()){
                     cargarYComparar();
                 }
             } catch (Exception e){
-                e.printStackTrace();
-                System.out.println("No se ha podido leer el archivo.\nCree un archivo en la carpeta donde se encuentra este .jar, llamado config.txt con los siguientes datos: ");
+                //e.printStackTrace();
+                System.out.println("No se ha podido leer el archivo.\nCree un archivo en la carpeta ("+System.getProperty("user.dir")+"), llamado config.txt con los siguientes datos: ");
                 System.out.println("Puede modificar los datos de este archivo para utilizar el sistema.\n" +
                                     "Los datos no pueden tener espacios entre si.\n" +
                                     "Servidor1:localhost\n" +
