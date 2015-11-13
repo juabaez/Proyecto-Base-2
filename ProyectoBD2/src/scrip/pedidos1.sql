@@ -158,3 +158,7 @@ BEGIN
  RETURN 105;
 END;
 $$ LANGUAGE plpgsql;
+
+
+create index nombreProv on PROVEEDORES(NOMBREPROV);
+create index contactoProv on PROVEEDORES(CONTACTO);

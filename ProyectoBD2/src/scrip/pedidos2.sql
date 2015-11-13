@@ -125,3 +125,6 @@ BEGIN
  RETURN 106;
 END;
 $$ LANGUAGE plpgsql;
+
+create index nombreEmp on EMPLEADOS(NOMBRE);
+create index nombreProv on PROVEEDORES(NOMBREPROV);
